@@ -99,13 +99,12 @@ public class UIControl implements ControlEventListener, SerialCommandListener {
       this.navigation.scrollLeft();
     }
     else if(event.getEvent().equals(ControlEvent.Event.PUSH)) {
-      if(stage.isShowing()) {
-
-      }
-      else {
+      if(!stage.isShowing()) {
         stage.show();
       }
-
+      else {
+        navigation.showBranches();
+      }
     }
   }
 

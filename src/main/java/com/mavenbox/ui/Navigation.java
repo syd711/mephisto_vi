@@ -29,9 +29,11 @@ public class Navigation extends HBox {
   private TransitionQueue transitionQueue;
   private int index = 0;
   private List<WorkspaceNavigation> jobNodes = new ArrayList<>();
-  private WorkspaceNavigation activeNode;
+  private WorkspaceNavigation activeWorkspace;
 
   public Navigation() {
+    double top = (Screen.getPrimary().getVisualBounds().getHeight()/2)-200;
+    setPadding(new Insets(top, 0, 0, 0));
     setAlignment(Pos.CENTER);
     setId("root");
     init();
@@ -51,11 +53,17 @@ public class Navigation extends HBox {
     }
   }
 
+  public void showBranches() {
+    activeWorkspace.showBranches();
+  }
+
+  // ------------------------------- UI setup -------------------------------------------------------
+
   private void scroll(int width) {
     List<Transition> transitions = new ArrayList<>();
-    transitions.add(TransitionUtil.createScaler(activeNode.getTitle(), 1.0));
-    activeNode = jobNodes.get(index);
-    transitions.add(TransitionUtil.createScaler(activeNode.getTitle(), ZOOM_FACTOR));
+    transitions.add(TransitionUtil.createScaler(activeWorkspace.getTitle(), 1.0));
+    activeWorkspace = jobNodes.get(index);
+    transitions.add(TransitionUtil.createScaler(activeWorkspace.getTitle(), ZOOM_FACTOR));
     transitions.add(TransitionUtil.createTranslateByXTransition(scroller, 200, width));
     transitionQueue.addTransition(new ParallelTransition(transitions.toArray(new Transition[transitions.size()])));
     transitionQueue.play();
@@ -86,8 +94,8 @@ public class Navigation extends HBox {
 
     getChildren().add(verticalRoot);
 
-    activeNode = jobNodes.get(0);
-    TransitionUtil.createScaler(activeNode.getTitle(), ZOOM_FACTOR).play();
+    activeWorkspace = jobNodes.get(0);
+    TransitionUtil.createScaler(activeWorkspace.getTitle(), ZOOM_FACTOR).play();
   }
 
   private Node createBackground() {

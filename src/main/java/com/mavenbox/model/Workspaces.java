@@ -1,9 +1,12 @@
 package com.mavenbox.model;
 
 import callete.api.Callete;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -12,6 +15,7 @@ import java.util.List;
  * Factory for creating job objects that are added via JobNodes to the main scroller.
  */
 public class Workspaces {
+  private final static Logger LOG = LoggerFactory.getLogger(Workspaces.class);
 
   private static List<Workspace> workspaces = new ArrayList<>();
 
@@ -29,12 +33,22 @@ public class Workspaces {
       });
 
       for(File project : projects) {
-        if(new File(project, "pom.xml").exists()) {
-          Workspace workspace = new Workspace(project);
-          workspaces.add(workspace);
+        if(isValidWorkspace(project)) {
+          try {
+            Workspace workspace = new Workspace(project);
+            workspaces.add(workspace);
+          } catch (Exception e) {
+            LOG.error("Failed to load git repository for " + project.getAbsolutePath() + ": " + e.getMessage(), e);
+          }
         }
       }
     }
+  }
+
+  private static boolean isValidWorkspace(File folder) {
+    boolean isMaven = new File(folder, "pom.xml").exists();
+    boolean isVersioned = new File(folder, ".git").exists();
+    return isMaven && isVersioned;
   }
 
   public static List<Workspace> getWorkspaces() {
