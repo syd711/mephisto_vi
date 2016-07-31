@@ -22,7 +22,8 @@ import java.util.List;
 /**
  * The main class of the project controller
  */
-public class Navigation extends HBox {
+public class Navigation extends HBox implements RotaryEncoderControlled {
+  private final static String CLS_SELECTED = "workspace-node--selected";
 
   public static final double ZOOM_FACTOR = 1.3;
   private HBox scroller;
@@ -39,22 +40,26 @@ public class Navigation extends HBox {
     init();
   }
 
-  public void scrollRight() {
+  @Override
+  public void rotateLeft() {
     if(index < Workspaces.getWorkspaces().size()-1) {
       index++;
       scroll(-WorkspaceNavigation.WIDTH);
     }
   }
 
-  public void scrollLeft() {
+  @Override
+  public void rotateRight() {
     if(index > 0) {
       index--;
       scroll(WorkspaceNavigation.WIDTH);
     }
   }
 
-  public void showBranches() {
-    activeWorkspace.showBranches();
+  @Override
+  public void push() {
+    activeWorkspace.select(true);
+    UIControl.getInstance().setRotaryEncoderControl(activeWorkspace);
   }
 
   // ------------------------------- UI setup -------------------------------------------------------
@@ -62,6 +67,8 @@ public class Navigation extends HBox {
   private void scroll(int width) {
     List<Transition> transitions = new ArrayList<>();
     transitions.add(TransitionUtil.createScaler(activeWorkspace.getTitle(), 1.0));
+    activeWorkspace.select(false);
+    activeWorkspace.getStyleClass().remove(CLS_SELECTED);
     activeWorkspace = jobNodes.get(index);
     transitions.add(TransitionUtil.createScaler(activeWorkspace.getTitle(), ZOOM_FACTOR));
     transitions.add(TransitionUtil.createTranslateByXTransition(scroller, 200, width));
@@ -87,7 +94,7 @@ public class Navigation extends HBox {
 
 
     for(Workspace workspace : Workspaces.getWorkspaces()) {
-      jobNodes.add(new WorkspaceNavigation(workspace));
+      jobNodes.add(new WorkspaceNavigation(this, workspace));
     }
     scroller.getChildren().addAll(jobNodes);
     rootStack.getChildren().addAll(scroller);
@@ -127,7 +134,7 @@ public class Navigation extends HBox {
 
   private Node createProjects() {
     HBox box = new HBox();
-    box.setMinHeight(70);
+    box.setMinHeight(68);
     box.setAlignment(Pos.CENTER);
     box.getStyleClass().addAll("project-scroller");
     return box;
