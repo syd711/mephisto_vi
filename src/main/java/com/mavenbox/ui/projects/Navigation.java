@@ -1,7 +1,8 @@
-package com.mavenbox.ui;
+package com.mavenbox.ui.projects;
 
 import com.mavenbox.model.Workspace;
 import com.mavenbox.model.Workspaces;
+import com.mavenbox.ui.UIControl;
 import com.mavenbox.ui.util.TransitionQueue;
 import com.mavenbox.ui.util.TransitionUtil;
 import javafx.animation.ParallelTransition;

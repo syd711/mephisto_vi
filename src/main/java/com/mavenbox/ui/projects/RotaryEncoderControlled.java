@@ -1,4 +1,4 @@
-package com.mavenbox.ui;
+package com.mavenbox.ui.projects;
 
 /**
  * Interface to be implemented by components that want to be controller by the rotary encoder.

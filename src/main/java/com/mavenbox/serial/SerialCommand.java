@@ -4,18 +4,8 @@ package com.mavenbox.serial;
  * Pojo created from the JSON send by the arduino.
  */
 public class SerialCommand {
-  private String cmd;
   private String source;
-  private String value;
-  private String direction;
-
-  public String getCmd() {
-    return cmd;
-  }
-
-  public void setCmd(String cmd) {
-    this.cmd = cmd;
-  }
+  private String event;
 
   public String getSource() {
     return source;
@@ -25,19 +15,11 @@ public class SerialCommand {
     this.source = source;
   }
 
-  public String getDirection() {
-    return direction;
+  public String getEvent() {
+    return event;
   }
 
-  public void setDirection(String direction) {
-    this.direction = direction;
-  }
-
-  public String getValue() {
-    return value;
-  }
-
-  public void setValue(String value) {
-    this.value = value;
+  public void setEvent(String event) {
+    this.event = event;
   }
 }

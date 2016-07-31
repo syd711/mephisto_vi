@@ -1,4 +1,4 @@
-package com.mavenbox.ui;
+package com.mavenbox.ui.projects;
 
 import com.mavenbox.model.Branch;
 import javafx.scene.control.Label;

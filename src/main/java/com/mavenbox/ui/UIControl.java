@@ -9,12 +9,8 @@ import com.mavenbox.serial.ArduinoClient;
 import com.mavenbox.serial.SerialCommand;
 import com.mavenbox.serial.SerialCommandListener;
 import com.mavenbox.ui.notifications.Notifications;
+import com.mavenbox.ui.projects.*;
 import javafx.application.Platform;
-import javafx.geometry.Rectangle2D;
-import javafx.scene.Scene;
-import javafx.scene.SceneAntialiasing;
-import javafx.scene.input.KeyEvent;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -48,7 +44,6 @@ public class UIControl implements ControlEventListener, SerialCommandListener {
     this.stage = stage;
     this.stage.initStyle(StageStyle.TRANSPARENT);
 
-    showProjects(true);
     eventListeners.add(this);
   }
 
@@ -71,29 +66,7 @@ public class UIControl implements ControlEventListener, SerialCommandListener {
     return arduinoClient;
   }
 
-  public void showProjects(boolean visible) {
-    if(visible) {
-      Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
 
-      Navigation navigation = new Navigation();
-      final Scene scene = new Scene(navigation, primaryScreenBounds.getWidth(), primaryScreenBounds.getHeight(), true, SceneAntialiasing.BALANCED);
-      scene.getStylesheets().add(ResourceLoader.getResource("theme.css"));
-      stage.setScene(scene);
-      scene.setFill(null);
-      stage.setAlwaysOnTop(true);
-      stage.centerOnScreen();
-      stage.addEventFilter(KeyEvent.KEY_PRESSED, new ControlKeyEventFilter());
-      stage.setX(0);
-      stage.setY(0);
-      stage.show();
-
-      setRotaryEncoderControl(navigation);
-      stage.show();
-    }
-    else {
-      stage.hide();
-    }
-  }
 
   public void fireControlEvent(ControlEvent event) {
     for(ControlEventListener eventListener : eventListeners) {
@@ -133,6 +106,18 @@ public class UIControl implements ControlEventListener, SerialCommandListener {
         Notifications.showNotification(stage, notification);
         break;
       }
+      case PIPELINE_PUSH_BUTTON: {
+        break;
+      }
+      case F1_PUSH_BUTTON: {
+        break;
+      }
+      case F2_PUSH_BUTTON: {
+        break;
+      }
+      case F3_PUSH_BUTTON: {
+        break;
+      }
     }
   }
 
@@ -151,13 +136,11 @@ public class UIControl implements ControlEventListener, SerialCommandListener {
         break;
       }
       case PUSH: {
-        if(rotaryEncoderControl != null) {
-          if(!stage.isShowing()) {
-            stage.show();
-          }
-          else {
-            rotaryEncoderControl.push();
-          }
+        if(!stage.isShowing()) {
+          Projects.showProjects(stage, true);
+        }
+        else {
+          rotaryEncoderControl.push();
         }
         break;
       }
@@ -173,7 +156,7 @@ public class UIControl implements ControlEventListener, SerialCommandListener {
     Platform.runLater(new Runnable() {
       @Override
       public void run() {
-        controlChanged(ControlKeyEventFilter.toControlEvent(command));
+        controlChanged(new ControlEvent(command));
       }
     });
   }

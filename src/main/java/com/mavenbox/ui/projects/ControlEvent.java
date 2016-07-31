@@ -1,10 +1,18 @@
-package com.mavenbox.ui;
+package com.mavenbox.ui.projects;
+
+import com.mavenbox.serial.SerialCommand;
 
 /**
  * Contains all data of a user input
  */
 public class ControlEvent {
-  public enum Event {ON, OFF, PUSH, ROTATE_LEFT, ROTATE_RIGHT}
+  public enum Event {
+    ON,
+    OFF,
+    PUSH,
+    ROTATE_LEFT,
+    ROTATE_RIGHT;
+  }
 
   public enum Control {
     ROTARY_ENCODER,
@@ -14,11 +22,16 @@ public class ControlEvent {
     PIPELINE_PUSH_BUTTON,
     F1_PUSH_BUTTON,
     F2_PUSH_BUTTON,
-    F3_PUSH_BUTTON
+    F3_PUSH_BUTTON;
   }
 
   private Control source;
   private Event event;
+
+  public ControlEvent(SerialCommand command) {
+    this.source = Control.valueOf(command.getSource());
+    this.event = Event.valueOf(command.getEvent());
+  }
 
   public ControlEvent(Control source, Event event) {
     this.source = source;

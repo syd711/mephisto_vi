@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 
 
@@ -32,17 +33,21 @@ public class ArduinoClient {
 
   public void connect() {
     try {
+      Enumeration portIdentifiers = CommPortIdentifier.getPortIdentifiers();
+      while(portIdentifiers.hasMoreElements()) {
+        portIdentifiers.nextElement();
+      }
       CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(port);
       SerialPort serialPort = (SerialPort) portIdentifier.open(this.getClass().getName(), TIME_OUT);
       serialPort.setSerialPortParams(9600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
-      this.output = new BufferedOutputStream(serialPort.getOutputStream());
       serialIO = new SerialIO(this, serialPort);
       serialIO.start();
+      this.output = new BufferedOutputStream(serialPort.getOutputStream());
       connected = true;
-      LOG.info("Started serial command listener");
+      LOG.info("Arduino Client connect successful!");
     } catch (Exception e) {
       connected = false;
-      LOG.error("Failed to open port: " + e.toString());
+      LOG.error("Failed to open port '" + port + "': " + e.toString());
       restart();
     }
   }

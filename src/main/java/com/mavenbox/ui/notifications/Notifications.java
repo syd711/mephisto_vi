@@ -19,7 +19,7 @@ public class Notifications {
 
   public static void showNotification(Stage stage, Notification notification) {
     NotificationNode notificationNode = new NotificationNode(notification);
-    final Scene scene = new Scene(notificationNode, 250, 100, true, SceneAntialiasing.BALANCED);
+    final Scene scene = new Scene(notificationNode, 250, 300, true, SceneAntialiasing.BALANCED);
     scene.getStylesheets().add(ResourceLoader.getResource("theme.css"));
     stage.setScene(scene);
     stage.setAlwaysOnTop(true);

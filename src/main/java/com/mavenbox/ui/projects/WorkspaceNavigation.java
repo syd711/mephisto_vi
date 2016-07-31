@@ -1,7 +1,9 @@
-package com.mavenbox.ui;
+package com.mavenbox.ui.projects;
 
 import com.mavenbox.model.Branch;
 import com.mavenbox.model.Workspace;
+import com.mavenbox.ui.ResourceLoader;
+import com.mavenbox.ui.UIControl;
 import com.mavenbox.ui.util.TransitionUtil;
 import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
@@ -86,7 +88,7 @@ public class WorkspaceNavigation extends VBox implements RotaryEncoderControlled
       @Override
       public void handle(ActionEvent event) {
         select(false);
-        UIControl.getInstance().showProjects(false);
+        Projects.showProjects(null, false);
       }
     });
     blink.play();

@@ -1,4 +1,4 @@
-package com.mavenbox.ui;
+package com.mavenbox.ui.projects;
 
 /**
  * Listener to be implemented by all components that listen on input events
