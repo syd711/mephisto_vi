@@ -25,6 +25,7 @@ public class ArduinoClient {
   private BufferedOutputStream output;
   private String port;
   private List<SerialCommandListener> commandListeners = new ArrayList<>();
+  private List<StatusListener> statusListeners = new ArrayList<>();
   private boolean connected = false;
 
   public ArduinoClient(String port) {
@@ -37,13 +38,21 @@ public class ArduinoClient {
       while(portIdentifiers.hasMoreElements()) {
         portIdentifiers.nextElement();
       }
+      LOG.info("Connecting to Arduino on port " + port);
       CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(port);
       SerialPort serialPort = (SerialPort) portIdentifier.open(this.getClass().getName(), TIME_OUT);
       serialPort.setSerialPortParams(9600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
+      //Let's wait a little bit, otherwise the initial data connection doesn't work
+      Thread.sleep(2000);
       serialIO = new SerialIO(this, serialPort);
       serialIO.start();
       this.output = new BufferedOutputStream(serialPort.getOutputStream());
       connected = true;
+      sendCommand(ArduinoCommandFactory.createStatusCommand());
+
+      for(StatusListener listener : statusListeners) {
+        listener.statusChanged(true);
+      }
       LOG.info("Arduino Client connect successful!");
     } catch (Exception e) {
       connected = false;
@@ -56,9 +65,19 @@ public class ArduinoClient {
     this.commandListeners.add(listener);
   }
 
-  public void updateMonitoringState(int index, boolean available) {
+  public void addStatusListener(StatusListener listener) {
+    this.statusListeners.add(listener);
+  }
+
+  /**
+   * Sends the given command to the Arduino.
+   * The command string must match one of the command constants
+   * of this class
+   * @param command the command to send to the Arduino.
+   */
+  public void sendCommand(final String command) {
     if(!connected) {
-      LOG.info("Skipped monitoring update, because Arduino is not available.");
+      LOG.info("Skipped command send, because Arduino is not available.");
       return;
     }
 
@@ -66,17 +85,25 @@ public class ArduinoClient {
       @Override
       public void run() {
         try {
-          String message = "monitoring:" + index + ":" + available;
-          output.write(message.getBytes());
+          Thread.currentThread().setName("Arduino Serial Output");
+          LOG.info("Sending command string '" + command + "'");
+          output.write(command.getBytes());
           output.flush();
         } catch (IOException e) {
-          LOG.error("Failed to update Arduino status: " + e.getMessage());
+          LOG.error("Failed to send command '" + command + "' to Arduino: " + e.getMessage());
         }
       }
     }.start();
   }
 
+  /**
+   * Terminates the serial IO communication
+   */
   public void shutdown() {
+    connected = false;
+    for(StatusListener listener : statusListeners) {
+      listener.statusChanged(false);
+    }
     if(serialIO != null) {
       serialIO.destroyIO();
     }
@@ -100,5 +127,9 @@ public class ArduinoClient {
     for(SerialCommandListener commandListener : commandListeners) {
       commandListener.commandReceived(cmd);
     }
+  }
+
+  public boolean isConnected() {
+    return connected;
   }
 }

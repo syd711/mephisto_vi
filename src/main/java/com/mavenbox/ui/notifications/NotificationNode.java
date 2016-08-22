@@ -1,6 +1,5 @@
 package com.mavenbox.ui.notifications;
 
-import com.mavenbox.model.Notification;
 import com.mavenbox.ui.ResourceLoader;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;

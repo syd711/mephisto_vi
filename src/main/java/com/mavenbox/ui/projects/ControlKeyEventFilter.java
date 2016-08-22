@@ -31,22 +31,22 @@ public class ControlKeyEventFilter implements EventHandler<KeyEvent> {
 
     }
     else if(code == KeyCode.NUMPAD1) {
-      UIControl.getInstance().fireControlEvent(new ControlEvent(ControlEvent.Control.GIT_PULL_SWITCH, ControlEvent.Event.ON));
+      UIControl.getInstance().fireControlEvent(new ControlEvent(ControlEvent.Control.SWITCH_1, ControlEvent.Event.ON));
     }
     else if(code == KeyCode.NUMPAD4) {
-      UIControl.getInstance().fireControlEvent(new ControlEvent(ControlEvent.Control.GIT_PULL_SWITCH, ControlEvent.Event.OFF));
+      UIControl.getInstance().fireControlEvent(new ControlEvent(ControlEvent.Control.SWITCH_1, ControlEvent.Event.OFF));
     }
     else if(code == KeyCode.NUMPAD2) {
-      UIControl.getInstance().fireControlEvent(new ControlEvent(ControlEvent.Control.MAKE_SWITCH, ControlEvent.Event.ON));
+      UIControl.getInstance().fireControlEvent(new ControlEvent(ControlEvent.Control.SWITCH_2, ControlEvent.Event.ON));
     }
     else if(code == KeyCode.NUMPAD5) {
-      UIControl.getInstance().fireControlEvent(new ControlEvent(ControlEvent.Control.MAKE_SWITCH, ControlEvent.Event.OFF));
+      UIControl.getInstance().fireControlEvent(new ControlEvent(ControlEvent.Control.SWITCH_2, ControlEvent.Event.OFF));
     }
     else if(code == KeyCode.NUMPAD3) {
-      UIControl.getInstance().fireControlEvent(new ControlEvent(ControlEvent.Control.GIT_PUSH_SWITCH, ControlEvent.Event.ON));
+      UIControl.getInstance().fireControlEvent(new ControlEvent(ControlEvent.Control.SWITCH_3, ControlEvent.Event.ON));
     }
     else if(code == KeyCode.NUMPAD6) {
-      UIControl.getInstance().fireControlEvent(new ControlEvent(ControlEvent.Control.GIT_PUSH_SWITCH, ControlEvent.Event.OFF));
+      UIControl.getInstance().fireControlEvent(new ControlEvent(ControlEvent.Control.SWITCH_3, ControlEvent.Event.OFF));
     }
     else if(code == KeyCode.NUMPAD7) {
       UIControl.getInstance().fireControlEvent(new ControlEvent(ControlEvent.Control.F1_PUSH_BUTTON, ControlEvent.Event.ON));

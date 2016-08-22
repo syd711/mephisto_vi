@@ -30,7 +30,7 @@ public class SerialIO extends Thread {
     while(running) {
       try {
         cmd = input.readLine();
-        LOG.info("Received command " + cmd);
+        LOG.info("Received command '" + cmd + "'");
         SerialCommand serialCommand = new Gson().fromJson(cmd, SerialCommand.class);
         new Thread() {
           @Override
@@ -44,6 +44,9 @@ public class SerialIO extends Thread {
         arduinoClient.restart();
       }
       catch(IllegalStateException ise) {
+        LOG.warn("Failed to parse json string '" + cmd + "': " + ise.getMessage());
+      }
+      catch(Exception ise) {
         LOG.warn("Failed to parse json string '" + cmd + "': " + ise.getMessage());
       }
     }

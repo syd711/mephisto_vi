@@ -1,6 +1,5 @@
 package com.mavenbox.ui.projects;
 
-import com.mavenbox.model.Branch;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 

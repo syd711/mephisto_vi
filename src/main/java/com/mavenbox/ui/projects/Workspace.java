@@ -1,4 +1,4 @@
-package com.mavenbox.model;
+package com.mavenbox.ui.projects;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.Status;

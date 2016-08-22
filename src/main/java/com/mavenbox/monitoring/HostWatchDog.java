@@ -1,6 +1,8 @@
 package com.mavenbox.monitoring;
 
 import callete.api.Callete;
+import com.mavenbox.serial.ArduinoClient;
+import com.mavenbox.serial.ArduinoCommandFactory;
 import com.mavenbox.ui.UIControl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,10 +29,12 @@ public class HostWatchDog extends Thread {
 
   @Override
   public void run() {
-    Thread.currentThread().setName("Host Watchdog '" + name + "'");
+    Thread.currentThread().setName("Host Watchdog [" + index + "] '" + name + "'");
+    LOG.info("Started new monitoring watchdog [" + index + "] '" + name + "' for " + host);
     while(running) {
       try {
-        Callete.getMonitoringService().httpPing(host, 80);
+        int returnCode = Callete.getMonitoringService().httpPing(host, 80);
+        updateMonitoringStatus(returnCode == 200);
       } catch (IOException e) {
         LOG.error("Failed to ping " + host + ": " + e.getMessage());
         updateMonitoringStatus(false);
@@ -41,11 +45,14 @@ public class HostWatchDog extends Thread {
       } catch (InterruptedException e) {
         //ignore
       }
-      updateMonitoringStatus(true);
     }
   }
 
   private void updateMonitoringStatus(boolean available) {
-    UIControl.getInstance().getArduinoClient().updateMonitoringState(index, available);
+    String cmd = ArduinoCommandFactory.createMonitoringStatusCommand(index, available);
+    ArduinoClient arduinoClient = UIControl.getInstance().getArduinoClient();
+    if(arduinoClient != null && arduinoClient.isConnected()) {
+      arduinoClient.sendCommand(cmd);
+    }
   }
 }

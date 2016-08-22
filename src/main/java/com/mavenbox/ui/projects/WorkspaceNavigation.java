@@ -1,7 +1,5 @@
 package com.mavenbox.ui.projects;
 
-import com.mavenbox.model.Branch;
-import com.mavenbox.model.Workspace;
 import com.mavenbox.ui.ResourceLoader;
 import com.mavenbox.ui.UIControl;
 import com.mavenbox.ui.util.TransitionUtil;

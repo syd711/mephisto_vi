@@ -1,4 +1,4 @@
-package com.mavenbox.model;
+package com.mavenbox.ui.projects;
 
 import callete.api.Callete;
 import org.slf4j.Logger;
@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
