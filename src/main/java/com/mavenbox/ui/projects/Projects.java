@@ -1,5 +1,6 @@
 package com.mavenbox.ui.projects;
 
+import callete.api.Callete;
 import com.mavenbox.ui.ResourceLoader;
 import com.mavenbox.ui.UIControl;
 import javafx.geometry.Rectangle2D;
@@ -13,6 +14,8 @@ import javafx.stage.Stage;
  * Static helper for projects
  */
 public class Projects {
+  private final static boolean ALWAYS_ON_TOP = Callete.getConfiguration().getBoolean("ui.alwaysOntop", true);
+
   private static Stage activeStage;
 
   public static void showProjects(Stage stage, boolean visible) {
@@ -25,7 +28,7 @@ public class Projects {
       scene.getStylesheets().add(ResourceLoader.getResource("theme.css"));
       stage.setScene(scene);
       scene.setFill(null);
-      stage.setAlwaysOnTop(true);
+      stage.setAlwaysOnTop(ALWAYS_ON_TOP);
       stage.centerOnScreen();
       stage.addEventFilter(KeyEvent.KEY_PRESSED, new ControlKeyEventFilter());
       stage.setX(0);

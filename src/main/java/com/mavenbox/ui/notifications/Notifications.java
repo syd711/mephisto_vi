@@ -13,7 +13,7 @@ import javafx.util.Duration;
  * Helper for notifications
  */
 public class Notifications {
-
+  private final static boolean ALWAYS_ON_TOP = Callete.getConfiguration().getBoolean("ui.alwaysOntop", true);
   private final static int NOTIFICATIONS_TIMEOUT = Callete.getConfiguration().getInt("notifications.timeout");
 
   public static void showNotification(Stage stage, Notification notification) {
@@ -21,7 +21,7 @@ public class Notifications {
     final Scene scene = new Scene(notificationNode, notification.getWidth(), notification.getHeight(), true, SceneAntialiasing.BALANCED);
     scene.getStylesheets().add(ResourceLoader.getResource("theme.css"));
     stage.setScene(scene);
-    stage.setAlwaysOnTop(true);
+    stage.setAlwaysOnTop(ALWAYS_ON_TOP);
     scene.setFill(null);
     stage.setX(50);
     stage.setY(50);
