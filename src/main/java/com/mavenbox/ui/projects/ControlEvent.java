@@ -6,16 +6,12 @@ import com.mavenbox.serial.SerialCommand;
  * Contains all data of a user input
  */
 public class ControlEvent {
-  public String getMessage() {
-    return message;
-  }
-
   public enum Event {
     ON,
     OFF,
     PUSH,
     ROTATE_LEFT,
-    ROTATE_RIGHT;
+    ROTATE_RIGHT
   }
 
   public enum Control {
@@ -32,6 +28,7 @@ public class ControlEvent {
   private Control source;
   private Event event;
   private String message;
+  private boolean silent;
 
   public ControlEvent(SerialCommand command) {
     if(command.getSource() != null) {
@@ -42,6 +39,7 @@ public class ControlEvent {
     }
 
     this.message = command.getMessage();
+    this.silent = command.isSilent() == 1;
   }
 
   /**
@@ -52,11 +50,19 @@ public class ControlEvent {
     this.event = event;
   }
 
+  public String getMessage() {
+    return message;
+  }
+
   public Event getEvent() {
     return event;
   }
 
   public Control getSource() {
     return source;
+  }
+
+  public boolean isSilent() {
+    return silent;
   }
 }

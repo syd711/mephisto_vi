@@ -8,6 +8,7 @@ public class SerialCommand {
   private String event;
   private String message;
   private int pin;
+  private int silent;
 
   public String getSource() {
     return source;
@@ -39,5 +40,13 @@ public class SerialCommand {
 
   public void setMessage(String message) {
     this.message = message;
+  }
+
+  public int isSilent() {
+    return silent;
+  }
+
+  public void setSilent(int silent) {
+    this.silent = silent;
   }
 }

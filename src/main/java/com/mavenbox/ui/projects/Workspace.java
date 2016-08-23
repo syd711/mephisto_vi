@@ -23,8 +23,10 @@ public class Workspace {
   private String name;
   private Repository repository;
   private Git git;
+  private File dir;
 
   public Workspace(File dir) throws IOException, GitAPIException {
+    this.dir = dir;
     this.name = dir.getName();
 
     // Open an existing repository
@@ -61,5 +63,13 @@ public class Workspace {
       LOG.error("Failed to determine status: " + e.getMessage(), e);
     }
     return false;
+  }
+
+  /**
+   * Executes the workspace build depending on the current settings.
+   * @param branch the branch to build
+   */
+  public void build(Branch branch, boolean pull, boolean make, boolean push) {
+    new Thread(new ProjectBuilder(git, dir, branch, pull, make, push, isDirty())).start();
   }
 }

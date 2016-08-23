@@ -15,6 +15,10 @@ public class BranchNavigation extends HBox {
     init();
   }
 
+  public Branch getBranch() {
+    return branch;
+  }
+
   private void init() {
     getStyleClass().add("branch-node");
     setMinHeight(30);

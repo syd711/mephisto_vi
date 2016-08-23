@@ -21,7 +21,7 @@ public class ArduinoClient {
   private final static Logger LOG = LoggerFactory.getLogger(ArduinoClient.class);
   private final static int TIME_OUT = Callete.getConfiguration().getInt("arduino.connect.timeout");
 
-  private SerialIO serialIO;
+  private ArduinoIOListener arduinoIOListener;
   private BufferedOutputStream output;
   private String port;
   private List<SerialCommandListener> commandListeners = new ArrayList<>();
@@ -44,8 +44,8 @@ public class ArduinoClient {
       serialPort.setSerialPortParams(9600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
       //Let's wait a little bit, otherwise the initial data connection doesn't work
       Thread.sleep(2000);
-      serialIO = new SerialIO(this, serialPort);
-      serialIO.start();
+      arduinoIOListener = new ArduinoIOListener(this, serialPort);
+      arduinoIOListener.start();
       this.output = new BufferedOutputStream(serialPort.getOutputStream());
       connected = true;
       sendCommand(ArduinoCommandFactory.createStatusCommand());
@@ -104,8 +104,8 @@ public class ArduinoClient {
     for(StatusListener listener : statusListeners) {
       listener.statusChanged(false);
     }
-    if(serialIO != null) {
-      serialIO.destroyIO();
+    if(arduinoIOListener != null) {
+      arduinoIOListener.destroyIO();
     }
   }
 

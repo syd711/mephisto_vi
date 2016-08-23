@@ -48,4 +48,16 @@ public class Notification {
   public int getHeight() {
     return height;
   }
+
+
+  @Override
+  public String toString() {
+    return "Notification{" +
+        "title='" + title + '\'' +
+        ", message='" + message + '\'' +
+        ", status=" + status +
+        ", width=" + width +
+        ", height=" + height +
+        '}';
+  }
 }

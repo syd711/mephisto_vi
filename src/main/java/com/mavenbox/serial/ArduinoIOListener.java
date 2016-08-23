@@ -11,15 +11,15 @@ import java.io.InputStreamReader;
 /**
  * Listener to receive the commands send by the Arduino.
  */
-public class SerialIO extends Thread {
-  private final static org.slf4j.Logger LOG = LoggerFactory.getLogger(SerialIO.class);
+public class ArduinoIOListener extends Thread {
+  private final static org.slf4j.Logger LOG = LoggerFactory.getLogger(ArduinoIOListener.class);
 
   private SerialPort serialPort;
   private ArduinoClient arduinoClient;
   private boolean running = true;
   private BufferedReader input;
 
-  public SerialIO(ArduinoClient arduinoClient, SerialPort serialPort) throws IOException {
+  public ArduinoIOListener(ArduinoClient arduinoClient, SerialPort serialPort) throws IOException {
     this.arduinoClient = arduinoClient;
     this.serialPort = serialPort;
     this.input = new BufferedReader(new InputStreamReader(serialPort.getInputStream()));

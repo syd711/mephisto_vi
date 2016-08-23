@@ -2,8 +2,13 @@ const int PUSH_BUTTON_DEBOUNCE = 160;
 
 //status LED
 const int STATUS_LED_APIN = A0;
+// interval at which to blink (milliseconds)
+const long blinkInterval = 300;  
+int blinkLedState = LOW;      
+unsigned long previousMillis = 0;     
 boolean statusEnabled = false;
 boolean statusReceived = false;
+boolean blink = false;
 
 //8-bit shift register
 const int SER_Pin = 8;   //pin 14 on the 75HC595
@@ -67,6 +72,7 @@ const int SWITCH_LED_PIN_3 = 5;
 /*********** Command List *************/
 const String CMD_STATUS_AVAILABLE = "status:true";
 const String CMD_MONITORING = "monitoring";
+const String CMD_BLINK = "blink";
 
 
 void setup(){
@@ -103,10 +109,16 @@ void setup(){
   pinMode(SWITCH_BUTTON_PIN_1, INPUT);
   pinMode(SWITCH_BUTTON_PIN_2, INPUT);
   pinMode(SWITCH_BUTTON_PIN_3, INPUT);
+  
   //set the initial state to skip first event
   switchStates[0] = digitalRead(SWITCH_BUTTON_PIN_1);
   switchStates[1] = digitalRead(SWITCH_BUTTON_PIN_2);
   switchStates[2] = digitalRead(SWITCH_BUTTON_PIN_3);
+
+  //Serial write of the initial switch button state
+  writeSwitchState(digitalRead(SWITCH_BUTTON_PIN_1), "SWITCH_3", SWITCH_BUTTON_PIN_1, true);
+  writeSwitchState(digitalRead(SWITCH_BUTTON_PIN_2), "SWITCH_2", SWITCH_BUTTON_PIN_2, true);
+  writeSwitchState(digitalRead(SWITCH_BUTTON_PIN_3), "SWITCH_1", SWITCH_BUTTON_PIN_3, true);
 
   //switch LEDs
   pinMode(SWITCH_LED_PIN_1, OUTPUT);
@@ -124,6 +136,9 @@ void loop(){
   
   //checkStatus LED
   readStatus();
+
+  //check blink state
+  updateBlink();
  
   //read 4x push buttons
   readAnalogPushButton(0, PUSH_BUTTON_APIN_1, "F3_PUSH_BUTTON");
@@ -144,6 +159,29 @@ void loop(){
 
   //pipeline monitoring
   updatePipelineStatus();
+}
+
+/**
+ * Checks if the LED should blink.
+ */
+void updateBlink() {
+  if(blink) {
+     unsigned long currentMillis = millis();
+       if (currentMillis - previousMillis >= blinkInterval) {
+      // save the last time you blinked the LED
+      previousMillis = currentMillis;
+  
+      // if the LED is off turn it on and vice-versa:
+      if (blinkLedState == LOW) {
+        blinkLedState = HIGH;
+      } else {
+        blinkLedState = LOW;
+      }
+  
+      // set the LED with the ledState of the variable:
+      digitalWrite(STATUS_LED_APIN, blinkLedState);
+    }
+  }
 }
 
 /**
@@ -185,13 +223,20 @@ void readSwitch(int index, int pin, String source) {
   if(lastState != state) {
     dirtySwitchState = true;
     switchStates[index] = state;
-    String stateString = "ON";
-    if(state == 0) {
-      stateString = "OFF";
-    }
-    String cmd = "{source:'" + source + "', event:'" + stateString + "', pin:" + String(pin) + "}";
-    Serial.println(cmd);
+    writeSwitchState(state, source, pin, false);
   }
+}
+
+/**
+ * Writes the serial command string for the switch state.
+ */
+void writeSwitchState(int state, String source, int pin, boolean silent) {
+  String stateString = "ON";
+  if(state == 0) {
+    stateString = "OFF";
+  }
+  String cmd = "{source:'" + source + "', event:'" + stateString + "', pin:" + String(pin) + ", silent: " + String(silent) + "}";
+  Serial.println(cmd);
 }
 
 /**
@@ -267,6 +312,14 @@ void listenForUpdates() {
       boolean enabled = statusToken == "true";
 
       registerState[index-1] = enabled;
+      Serial.println("{'message':'" + command + "'}");
+    }
+    else if(commandToken == CMD_BLINK) {
+      blink = tokenize(command, ':', 1).toInt();
+      if(blink == 0) {
+        digitalWrite(STATUS_LED_APIN, HIGH);
+        previousMillis = 0;
+      }
       Serial.println("{'message':'" + command + "'}");
     }
   }

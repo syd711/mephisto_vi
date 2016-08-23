@@ -87,6 +87,11 @@ public class WorkspaceNavigation extends VBox implements RotaryEncoderControlled
       public void handle(ActionEvent event) {
         select(false);
         Projects.showProjects(null, false);
+
+        boolean pull = UIControl.getInstance().isPullEnabled();
+        boolean make = UIControl.getInstance().isMakeEnabled();
+        boolean push = UIControl.getInstance().isPushEnabled();
+        workspace.build(selectedBranch.getBranch(), pull, make, push);
       }
     });
     blink.play();
