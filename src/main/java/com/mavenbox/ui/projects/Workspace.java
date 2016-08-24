@@ -72,4 +72,15 @@ public class Workspace {
   public void build(Branch branch, boolean pull, boolean make, boolean push) {
     new Thread(new ProjectBuilder(git, dir, branch, pull, make, push, isDirty())).start();
   }
+
+  public boolean isActive(Branch branch) {
+    try {
+      String name = branch.getName();
+      String activeName = git.getRepository().getBranch();
+      return name.equals(activeName);
+    } catch (IOException e) {
+      LOG.error("Failed to determine active branch name: " + e.getMessage(), e);
+    }
+    return false;
+  }
 }

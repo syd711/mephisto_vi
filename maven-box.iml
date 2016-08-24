@@ -22,10 +22,7 @@
     <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.4" level="project" />
     <orderEntry type="library" name="Maven: callete:callete-api-impl:0.1-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: callete:callete-api:0.1-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.5" level="project" />
     <orderEntry type="library" name="Maven: com.google.guava:guava:18.0" level="project" />
-    <orderEntry type="library" name="Maven: com.sun.jersey.jersey-test-framework:jersey-test-framework-grizzly2:1.9.1" level="project" />
-    <orderEntry type="library" name="Maven: commons-configuration:commons-configuration:1.10" level="project" />
     <orderEntry type="library" name="Maven: com.pi4j:pi4j-core:1.0" level="project" />
     <orderEntry type="library" name="Maven: net.thejavashop:javampd:5.0.0" level="project" />
     <orderEntry type="library" name="Maven: com.google.inject:guice:3.0" level="project" />
@@ -33,6 +30,7 @@
     <orderEntry type="library" name="Maven: aopalliance:aopalliance:1.0" level="project" />
     <orderEntry type="library" name="Maven: rome:rome:1.0" level="project" />
     <orderEntry type="library" name="Maven: jdom:jdom:1.0" level="project" />
+    <orderEntry type="library" name="Maven: commons-configuration:commons-configuration:1.10" level="project" />
     <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.6" level="project" />
     <orderEntry type="library" name="Maven: commons-net:commons-net:2.0" level="project" />
     <orderEntry type="library" name="Maven: com.mpatric:mp3agic:0.8.3" level="project" />
@@ -47,7 +45,7 @@
     <orderEntry type="library" name="Maven: org.glassfish:javax.servlet:3.1" level="project" />
     <orderEntry type="library" name="Maven: com.sun.jersey:jersey-server:1.9.1" level="project" />
     <orderEntry type="library" name="Maven: asm:asm:3.1" level="project" />
-    <orderEntry type="library" name="Maven: com.sun.jersey:jersey-core:1.9.1" level="project" />
+    <orderEntry type="library" name="Maven: com.sun.jersey.jersey-test-framework:jersey-test-framework-grizzly2:1.9.1" level="project" />
     <orderEntry type="library" name="Maven: com.sun.jersey.jersey-test-framework:jersey-test-framework-core:1.9.1" level="project" />
     <orderEntry type="library" name="Maven: javax.servlet:javax.servlet-api:3.0.1" level="project" />
     <orderEntry type="library" name="Maven: junit:junit:4.8.2" level="project" />
@@ -65,12 +63,15 @@
     <orderEntry type="library" name="Maven: org.codehaus.jackson:jackson-mapper-asl:1.8.3" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.jackson:jackson-jaxrs:1.8.3" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.jackson:jackson-xc:1.8.3" level="project" />
+    <orderEntry type="library" name="Maven: com.sun.jersey:jersey-core:1.9.1" level="project" />
     <orderEntry type="library" name="Maven: googlemusic.api:googlemusic.api:1.0.0" level="project" />
     <orderEntry type="library" name="Maven: com.googlecode.jen-api:jen-api:4.x.p" level="project" />
     <orderEntry type="library" name="Maven: com.googlecode.json-simple:json-simple:1.1" level="project" />
     <orderEntry type="library" name="Maven: org.imgscalr:imgscalr-lib:4.2" level="project" />
     <orderEntry type="library" name="Maven: org.freemarker:freemarker:2.3.20" level="project" />
-    <orderEntry type="library" name="Maven: org.slf4j:slf4j-simple:1.7.5" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.6.1" level="project" />
+    <orderEntry type="library" name="Maven: ch.qos.logback:logback-classic:1.1.2" level="project" />
+    <orderEntry type="library" name="Maven: ch.qos.logback:logback-core:1.1.2" level="project" />
     <orderEntry type="library" name="Maven: org.jetbrains:annotations:15.0" level="project" />
   </component>
 </module>

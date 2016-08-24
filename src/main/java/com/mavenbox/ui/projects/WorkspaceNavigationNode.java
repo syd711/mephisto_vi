@@ -18,18 +18,18 @@ import java.util.List;
 /**
  * Represents on node in the scroller
  */
-public class WorkspaceNavigation extends VBox implements RotaryEncoderControlled {
+public class WorkspaceNavigationNode extends VBox implements RotaryEncoderControlled {
   public static final int WIDTH = 350;
 
   private Label title;
   private Workspace workspace;
   private VBox branchesBox;
-  private BranchNavigation selectedBranch;
-  private List<BranchNavigation> branchNavigations = new ArrayList<>();
+  private BranchNavigationNode selectedBranch;
+  private List<BranchNavigationNode> branchNavigations = new ArrayList<>();
   private Navigation navigation;
   private int index = 0;
 
-  public WorkspaceNavigation(Navigation navigation, Workspace workspace) {
+  public WorkspaceNavigationNode(Navigation navigation, Workspace workspace) {
     this.workspace = workspace;
     this.navigation = navigation;
 
@@ -104,7 +104,7 @@ public class WorkspaceNavigation extends VBox implements RotaryEncoderControlled
     if(select) {
       List<Branch> branches = workspace.getBranches();
       for(Branch branch : branches) {
-        BranchNavigation branchNavigation = new BranchNavigation(branch);
+        BranchNavigationNode branchNavigation = new BranchNavigationNode(branch, workspace.isActive(branch));
         branchNavigations.add(branchNavigation);
       }
       branchesBox.getChildren().addAll(branchNavigations);

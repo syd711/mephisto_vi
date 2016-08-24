@@ -6,12 +6,14 @@ import javafx.scene.layout.HBox;
 /**
  *
  */
-public class BranchNavigation extends HBox {
+public class BranchNavigationNode extends HBox {
 
   private Branch branch;
+  private boolean active;
 
-  public BranchNavigation(Branch branch) {
+  public BranchNavigationNode(Branch branch, boolean active) {
     this.branch = branch;
+    this.active = active;
     init();
   }
 
@@ -20,7 +22,11 @@ public class BranchNavigation extends HBox {
   }
 
   private void init() {
-    getStyleClass().add("branch-node");
+    String cls = "branch-node";
+    if(active) {
+      cls+= "--active";
+    }
+    getStyleClass().add(cls);
     setMinHeight(30);
     Label branchName = new Label(branch.getName());
     getChildren().add(branchName);

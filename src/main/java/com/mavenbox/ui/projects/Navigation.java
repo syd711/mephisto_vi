@@ -28,8 +28,8 @@ public class Navigation extends HBox implements RotaryEncoderControlled {
   private HBox scroller;
   private TransitionQueue transitionQueue;
   private int index = 0;
-  private List<WorkspaceNavigation> jobNodes = new ArrayList<>();
-  private WorkspaceNavigation activeWorkspace;
+  private List<WorkspaceNavigationNode> jobNodes = new ArrayList<>();
+  private WorkspaceNavigationNode activeWorkspace;
 
   public Navigation() {
     double top = (Screen.getPrimary().getVisualBounds().getHeight()/2)-200;
@@ -43,7 +43,7 @@ public class Navigation extends HBox implements RotaryEncoderControlled {
   public void rotateLeft() {
     if(index < Workspaces.getWorkspaces().size()-1) {
       index++;
-      scroll(-WorkspaceNavigation.WIDTH);
+      scroll(-WorkspaceNavigationNode.WIDTH);
     }
   }
 
@@ -51,7 +51,7 @@ public class Navigation extends HBox implements RotaryEncoderControlled {
   public void rotateRight() {
     if(index > 0) {
       index--;
-      scroll(WorkspaceNavigation.WIDTH);
+      scroll(WorkspaceNavigationNode.WIDTH);
     }
   }
 
@@ -87,13 +87,13 @@ public class Navigation extends HBox implements RotaryEncoderControlled {
     HBox spacer = new HBox();
     spacer.setAlignment(Pos.BASELINE_CENTER);
     spacer.getStyleClass().addAll("job-node");
-    double offset = (Workspaces.getWorkspaces().size() - 1) * WorkspaceNavigation.WIDTH;
+    double offset = (Workspaces.getWorkspaces().size() - 1) * WorkspaceNavigationNode.WIDTH;
     spacer.setMinWidth(offset);
     scroller.getChildren().add(spacer);
 
 
     for(Workspace workspace : Workspaces.getWorkspaces()) {
-      jobNodes.add(new WorkspaceNavigation(this, workspace));
+      jobNodes.add(new WorkspaceNavigationNode(this, workspace));
     }
     scroller.getChildren().addAll(jobNodes);
     rootStack.getChildren().addAll(scroller);
