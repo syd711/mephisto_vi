@@ -32,12 +32,14 @@ public class ArduinoIOListener extends Thread {
         cmd = input.readLine();
         LOG.info("Received command '" + cmd + "'");
         SerialCommand serialCommand = new Gson().fromJson(cmd, SerialCommand.class);
-        new Thread() {
+        Thread thread = new Thread()  {
           @Override
           public void run() {
             arduinoClient.notifyCommand(serialCommand);
           }
-        }.start();
+        };
+        thread.setName("Arduino Notification Thread");
+        thread.start();
       }
       catch (IOException e) {
         LOG.error("Failed to read serial command: " + e.getMessage() + ", restarting...");

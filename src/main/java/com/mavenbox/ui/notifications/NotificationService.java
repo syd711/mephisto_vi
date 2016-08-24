@@ -30,7 +30,10 @@ public class NotificationService extends Task<Void> {
   private boolean blocked = false;
 
   public NotificationService() {
-    new Thread(this).start();
+
+    Thread thread = new Thread(this);
+    thread.setName("Notification Service");
+    thread.start();
   }
 
   public void showNotification(Notification notification) {

@@ -81,7 +81,7 @@ public class ArduinoClient {
       return;
     }
 
-    new Thread() {
+    Thread thread = new Thread() {
       @Override
       public void run() {
         try {
@@ -93,7 +93,9 @@ public class ArduinoClient {
           LOG.error("Failed to send command '" + command + "' to Arduino: " + e.getMessage());
         }
       }
-    }.start();
+    };
+    thread.setName("Arduino Serial Output");
+    thread.start();
   }
 
   /**

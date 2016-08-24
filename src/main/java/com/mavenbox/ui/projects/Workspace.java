@@ -70,7 +70,9 @@ public class Workspace {
    * @param branch the branch to build
    */
   public void build(Branch branch, boolean pull, boolean make, boolean push) {
-    new Thread(new ProjectBuilder(git, dir, branch, pull, make, push, isDirty())).start();
+    Thread t = new Thread(new ProjectBuilder(git, dir, branch, pull, make, push, isDirty()));
+    t.setName("ProjectBuilder for " + dir.getAbsolutePath());
+    t.start();
   }
 
   public boolean isActive(Branch branch) {

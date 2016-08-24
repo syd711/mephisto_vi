@@ -1,6 +1,7 @@
 package com.mavenbox.ui;
 
 import callete.api.Callete;
+import callete.api.util.SystemCommandExecutor;
 import com.mavenbox.serial.ArduinoClient;
 import com.mavenbox.serial.SerialCommand;
 import com.mavenbox.serial.SerialCommandListener;
@@ -17,7 +18,9 @@ import javafx.stage.StageStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -55,7 +58,7 @@ public class UIControl implements ControlEventListener, SerialCommandListener, S
 
     this.stage = stage;
     PlatformImpl.setTaskbarApplication(false);
-    this.stage.initStyle(StageStyle.UTILITY);
+    this.stage.initStyle(StageStyle.TRANSPARENT);
 
     eventListeners.add(this);
   }
@@ -143,20 +146,29 @@ public class UIControl implements ControlEventListener, SerialCommandListener, S
         break;
       }
       case PIPELINE_PUSH_BUTTON: {
-        Notification notification = new Notification("Pipelines", new PipelinesNode(), 460, 390, 5000);
+        Notification notification = new Notification("Pipelines", new PipelinesNode(), 460, 400, 5000);
         notificationService.showNotification(notification);
         break;
       }
       case F1_PUSH_BUTTON: {
+        executeFunctionKey("f1");
         break;
       }
       case F2_PUSH_BUTTON: {
+        executeFunctionKey("f2");
         break;
       }
       case F3_PUSH_BUTTON: {
+        executeFunctionKey("f3");
         break;
       }
     }
+  }
+
+  private void executeFunctionKey(String key) {
+    SystemCommandExecutor executor = new SystemCommandExecutor(Arrays.asList(key+".bat"));
+    executor.setDir(new File("conf/"));
+    executor.executeCommandAsync();
   }
 
   private void handleRotaryEncoderEvent(ControlEvent.Event e) {
