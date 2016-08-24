@@ -1,13 +1,18 @@
-package com.mavenbox.monitoring;
+package com.mavenbox.ui.monitoring;
 
 import callete.api.Callete;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Central point for monitoring actions.
  */
-public class Monitoring {
+public class MonitoringService {
 
-  public static void init() {
+  private List<Pipeline> pipelines = new ArrayList<>();
+
+  public void init() {
     int index = 1;
     while(true) {
       String nameKey = "monitoring." + index + ".name";
@@ -17,7 +22,9 @@ public class Monitoring {
         String name = Callete.getConfiguration().getString(nameKey);
         String host = Callete.getConfiguration().getString(hostKey);
 
-        new HostWatchDog(index, name, host).start();
+        Pipeline pipeline = new Pipeline(index, name, host);
+        new HostWatchDog(pipeline).start();
+        pipelines.add(pipeline);
       }
       else {
         break;
@@ -26,4 +33,7 @@ public class Monitoring {
     }
   }
 
+  public List<Pipeline> getPipelines() {
+    return pipelines;
+  }
 }

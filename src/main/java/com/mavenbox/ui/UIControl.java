@@ -5,9 +5,12 @@ import com.mavenbox.serial.ArduinoClient;
 import com.mavenbox.serial.SerialCommand;
 import com.mavenbox.serial.SerialCommandListener;
 import com.mavenbox.serial.StatusListener;
+import com.mavenbox.ui.monitoring.MonitoringService;
+import com.mavenbox.ui.monitoring.PipelinesNode;
 import com.mavenbox.ui.notifications.Notification;
 import com.mavenbox.ui.notifications.NotificationService;
 import com.mavenbox.ui.projects.*;
+import com.sun.javafx.application.PlatformImpl;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -32,7 +35,10 @@ public class UIControl implements ControlEventListener, SerialCommandListener, S
   private boolean pullEnabled;
   private boolean makeEnabled;
   private boolean pushEnabled;
+
   private NotificationService notificationService;
+
+  private MonitoringService monitoringService;
 
   //force singleton
   private UIControl() {
@@ -48,18 +54,20 @@ public class UIControl implements ControlEventListener, SerialCommandListener, S
     initServices();
 
     this.stage = stage;
-    this.stage.initStyle(StageStyle.TRANSPARENT);
+    PlatformImpl.setTaskbarApplication(false);
+    this.stage.initStyle(StageStyle.UTILITY);
 
     eventListeners.add(this);
   }
-
 
   public Stage getStage() {
     return stage;
   }
 
+
   private void initServices() {
     notificationService = new NotificationService();
+    monitoringService = new MonitoringService();
 
     String port = Callete.getConfiguration().getString("arduino.port");
     arduinoClient = new ArduinoClient(port);
@@ -70,11 +78,15 @@ public class UIControl implements ControlEventListener, SerialCommandListener, S
       public void run() {
         Thread.currentThread().setName("Arduino Client");
         arduinoClient.connect();
+
+        monitoringService.init();
+        Workspaces.init();
       }
     }.start();
+  }
 
-    //Monitoring.init();
-    Workspaces.init();
+  public MonitoringService getMonitoringService() {
+    return monitoringService;
   }
 
   public ArduinoClient getArduinoClient() {
@@ -109,7 +121,7 @@ public class UIControl implements ControlEventListener, SerialCommandListener, S
       case SWITCH_1: {
         pullEnabled = e.equals(ControlEvent.Event.ON);
         if(!event.isSilent()) {
-          Notification notification = new Notification("Notification", "Git Pull:", pullEnabled);
+          Notification notification = new Notification("Build Control", "Git Pull:", pullEnabled);
           notificationService.showNotification(notification);
         }
         break;
@@ -117,7 +129,7 @@ public class UIControl implements ControlEventListener, SerialCommandListener, S
       case SWITCH_2: {
         makeEnabled = e.equals(ControlEvent.Event.ON);
         if(!event.isSilent()) {
-          Notification notification = new Notification("Notification", "Maven Build:", makeEnabled, 250);
+          Notification notification = new Notification("Build Control", "Maven Build:", makeEnabled, 250);
           notificationService.showNotification(notification);
         }
         break;
@@ -125,12 +137,14 @@ public class UIControl implements ControlEventListener, SerialCommandListener, S
       case SWITCH_3: {
         pushEnabled = e.equals(ControlEvent.Event.ON);
         if(!event.isSilent()) {
-          Notification notification = new Notification("Notification", "Git Push:", pushEnabled);
+          Notification notification = new Notification("Build Control", "Git Push:", pushEnabled);
           notificationService.showNotification(notification);
         }
         break;
       }
       case PIPELINE_PUSH_BUTTON: {
+        Notification notification = new Notification("Pipelines", new PipelinesNode(), 460, 390, 5000);
+        notificationService.showNotification(notification);
         break;
       }
       case F1_PUSH_BUTTON: {
@@ -189,7 +203,7 @@ public class UIControl implements ControlEventListener, SerialCommandListener, S
 
   @Override
   public void statusChanged(boolean connected) {
-    notificationService.showNotification(new Notification("Maven Box Status", "Maven Box Status", connected, 350, 100));
+    notificationService.showNotification(new Notification("Maven Box Status", "Maven Box Status", connected, 350));
   }
 
   public NotificationService getNotificationService() {

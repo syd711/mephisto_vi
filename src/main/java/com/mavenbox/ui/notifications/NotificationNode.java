@@ -25,24 +25,29 @@ public class NotificationNode extends VBox {
     titleBox.getChildren().add(title);
     getChildren().add(titleBox);
 
-    HBox notificationMessageBox = new HBox();
-    notificationMessageBox.setAlignment(Pos.CENTER);
-    notificationMessageBox.getStyleClass().add("notification-message-node");
-    Label notificationMessage = new Label(notification.getMessage());
-    notificationMessage.getStyleClass().add("notification-font");
-    notificationMessageBox.getChildren().add(notificationMessage);
+    if(notification.getMessage() != null) {
+      HBox notificationMessageBox = new HBox();
+      notificationMessageBox.setAlignment(Pos.CENTER);
+      notificationMessageBox.getStyleClass().add("notification-message-node");
+      Label notificationMessage = new Label(notification.getMessage());
+      notificationMessage.getStyleClass().add("notification-font");
+      notificationMessageBox.getChildren().add(notificationMessage);
 
-    if(notification.isStatus()) {
-      ImageView img = new ImageView(new Image(ResourceLoader.getResource("verification24.png"), 35, 35, false, true));
-      notificationMessageBox.getChildren().add(img);
+      if(notification.isStatus() != null) {
+        if(notification.isStatus()) {
+          ImageView img = new ImageView(new Image(ResourceLoader.getResource("verification24.png"), 35, 35, false, true));
+          notificationMessageBox.getChildren().add(img);
+        }
+        else {
+          ImageView img = new ImageView(new Image(ResourceLoader.getResource("clear5.png"), 35, 35, false, true));
+          notificationMessageBox.getChildren().add(img);
+        }
+      }
+
+      getChildren().add(notificationMessageBox);
     }
     else {
-      ImageView img = new ImageView(new Image(ResourceLoader.getResource("clear5.png"), 35, 35, false, true));
-      notificationMessageBox.getChildren().add(img);
+      getChildren().add(notification.getPanel());
     }
-
-
-
-    getChildren().add(notificationMessageBox);
   }
 }

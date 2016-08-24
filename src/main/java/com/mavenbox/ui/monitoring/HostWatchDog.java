@@ -1,4 +1,4 @@
-package com.mavenbox.monitoring;
+package com.mavenbox.ui.monitoring;
 
 import callete.api.Callete;
 import com.mavenbox.serial.ArduinoClient;
@@ -16,28 +16,27 @@ public class HostWatchDog extends Thread {
   private final static Logger LOG = LoggerFactory.getLogger(HostWatchDog.class);
   private final static int TIMEOUT = Callete.getConfiguration().getInt("monitoring.timeout.millis");
 
-  private String name;
-  private String host;
   private boolean running = true;
-  private int index;
+  private Pipeline pipeline;
 
-  public HostWatchDog(int index, String name, String host) {
-    this.index = index;
-    this.name = name;
-    this.host = host;
+  public HostWatchDog(Pipeline pipeline) {
+    this.pipeline = pipeline;
   }
 
   @Override
   public void run() {
-    Thread.currentThread().setName("Host Watchdog [" + index + "] '" + name + "'");
-    LOG.info("Started new monitoring watchdog [" + index + "] '" + name + "' for " + host);
+    Thread.currentThread().setName("Host Watchdog [" + pipeline.getIndex() + "] '" + pipeline.getName() + "'");
+    LOG.info("Started new monitoring watchdog [" + pipeline.getIndex() + "] '" + pipeline.getName() + "' for " + pipeline.getHost());
     while(running) {
       try {
-        int returnCode = Callete.getMonitoringService().httpPing(host, 80);
-        updateMonitoringStatus(returnCode == 200);
+        int returnCode = Callete.getMonitoringService().httpPing(pipeline.getHost(), 80);
+        boolean available = returnCode == 200;
+        updateMonitoringStatus(available);
+        pipeline.setStatus(available);
       } catch (IOException e) {
-        LOG.error("Failed to ping " + host + ": " + e.getMessage());
+        LOG.error("Failed to ping " + pipeline.getHost() + ": " + e.getMessage());
         updateMonitoringStatus(false);
+        pipeline.setStatus(false);
       }
 
       try {
@@ -49,7 +48,7 @@ public class HostWatchDog extends Thread {
   }
 
   private void updateMonitoringStatus(boolean available) {
-    String cmd = ArduinoCommandFactory.createMonitoringStatusCommand(index, available);
+    String cmd = ArduinoCommandFactory.createMonitoringStatusCommand(pipeline.getIndex(), available);
     ArduinoClient arduinoClient = UIControl.getInstance().getArduinoClient();
     if(arduinoClient != null && arduinoClient.isConnected()) {
       arduinoClient.sendCommand(cmd);

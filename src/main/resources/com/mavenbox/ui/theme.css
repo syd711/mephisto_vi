@@ -73,6 +73,17 @@
    -fx-text-fill: black;
 }
 
+/* Monitoring */
+.pipeline-name {
+   -fx-font-size: 16px;
+   -fx-text-fill: black;
+}
+
+.pipeline-host {
+   -fx-font-size: 10px;
+   -fx-text-fill: black;
+}
+
 /* Background */
 .title-box {
     -fx-background-color:#000;

@@ -24,7 +24,6 @@ public class NotificationService extends Task<Void> {
   private final static Logger LOG = LoggerFactory.getLogger(NotificationService.class);
 
   private final static boolean ALWAYS_ON_TOP = Callete.getConfiguration().getBoolean("ui.alwaysOntop", true);
-  private final static int NOTIFICATIONS_TIMEOUT = Callete.getConfiguration().getInt("notifications.timeout");
 
   private boolean running = true;
   private Queue<Notification> notificationQueue = new ArrayBlockingQueue<Notification>(100, true);
@@ -60,7 +59,7 @@ public class NotificationService extends Task<Void> {
           stage.show();
 
           FadeTransition outFader = TransitionUtil.createOutFader(notificationNode, 500);
-          outFader.setDelay(Duration.millis(NOTIFICATIONS_TIMEOUT));
+          outFader.setDelay(Duration.millis(notification.getTimeout()));
           outFader.setOnFinished(event -> {
             stage.close();
             blocked = false;
