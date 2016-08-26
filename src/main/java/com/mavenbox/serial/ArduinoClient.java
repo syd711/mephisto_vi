@@ -1,15 +1,16 @@
 package com.mavenbox.serial;
 
 import callete.api.Callete;
-import gnu.io.CommPortIdentifier;
-import gnu.io.SerialPort;
+import com.fazecast.jSerialComm.SerialPort;
+import com.fazecast.jSerialComm.SerialPortDataListener;
+import com.fazecast.jSerialComm.SerialPortEvent;
+import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 
 
@@ -21,12 +22,12 @@ public class ArduinoClient {
   private final static Logger LOG = LoggerFactory.getLogger(ArduinoClient.class);
   private final static int TIME_OUT = Callete.getConfiguration().getInt("arduino.connect.timeout");
 
-  private ArduinoIOListener arduinoIOListener;
   private BufferedOutputStream output;
   private String port;
   private List<SerialCommandListener> commandListeners = new ArrayList<>();
   private List<StatusListener> statusListeners = new ArrayList<>();
   private boolean connected = false;
+  private StringBuilder buffer = new StringBuilder();
 
   public ArduinoClient(String port) {
     this.port = port;
@@ -34,18 +35,34 @@ public class ArduinoClient {
 
   public void connect() {
     try {
-      Enumeration portIdentifiers = CommPortIdentifier.getPortIdentifiers();
-      while(portIdentifiers.hasMoreElements()) {
-        portIdentifiers.nextElement();
-      }
+      SerialPort serialPort = SerialPort.getCommPort(port);
+      serialPort.setBaudRate(9600);
+      serialPort.openPort();
       LOG.info("Connecting to Arduino on port " + port);
-      CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(port);
-      SerialPort serialPort = (SerialPort) portIdentifier.open(this.getClass().getName(), TIME_OUT);
-      serialPort.setSerialPortParams(9600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
+      serialPort.addDataListener(new SerialPortDataListener() {
+        @Override
+        public int getListeningEvents() {
+          return SerialPort.LISTENING_EVENT_DATA_AVAILABLE;
+        }
+
+        @Override
+        public void serialEvent(SerialPortEvent event) {
+          if(event.getEventType() != SerialPort.LISTENING_EVENT_DATA_AVAILABLE) {
+            return;
+          }
+          byte[] newData = new byte[serialPort.bytesAvailable()];
+          serialPort.readBytes(newData, newData.length);
+
+          String part = new String(newData);
+          buffer.append(part);
+
+          //format command string from buffer
+          checkCommandBuffer();
+        }
+      });
+
       //Let's wait a little bit, otherwise the initial data connection doesn't work
       Thread.sleep(2000);
-      arduinoIOListener = new ArduinoIOListener(this, serialPort);
-      arduinoIOListener.start();
       this.output = new BufferedOutputStream(serialPort.getOutputStream());
       connected = true;
       sendCommand(ArduinoCommandFactory.createStatusCommand());
@@ -61,6 +78,30 @@ public class ArduinoClient {
     }
   }
 
+  private void checkCommandBuffer() {
+    String commands = buffer.toString();
+    if(commands.contains("}") && commands.contains("{") && (commands.lastIndexOf("{") < commands.lastIndexOf("}"))) {
+      buffer = new StringBuilder();
+      String cmd = null;
+
+      try {
+        cmd = commands.substring(commands.lastIndexOf("{"), commands.lastIndexOf("}") + 1).trim();
+        LOG.info("Received command '" + cmd + "'");
+        final SerialCommand serialCommand = new Gson().fromJson(cmd, SerialCommand.class);
+        Thread thread = new Thread() {
+          @Override
+          public void run() {
+            notifyCommand(serialCommand);
+          }
+        };
+        thread.setName("Arduino Notification Thread");
+        thread.start();
+      } catch (Exception e) {
+        LOG.error("Failed to parse JSON: " + e.getMessage(), e);
+      }
+    }
+  }
+
   public void addSerialCommandListener(SerialCommandListener listener) {
     this.commandListeners.add(listener);
   }
@@ -73,6 +114,7 @@ public class ArduinoClient {
    * Sends the given command to the Arduino.
    * The command string must match one of the command constants
    * of this class
+   *
    * @param command the command to send to the Arduino.
    */
   public void sendCommand(final String command) {
@@ -105,9 +147,6 @@ public class ArduinoClient {
     connected = false;
     for(StatusListener listener : statusListeners) {
       listener.statusChanged(false);
-    }
-    if(arduinoIOListener != null) {
-      arduinoIOListener.destroyIO();
     }
   }
 
