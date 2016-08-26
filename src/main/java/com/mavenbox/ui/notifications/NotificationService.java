@@ -31,45 +31,44 @@ public class NotificationService extends Task<Void> {
 
   public NotificationService() {
 
-    Thread thread = new Thread(this);
-    thread.setName("Notification Service");
-    thread.start();
   }
 
   public void showNotification(Notification notification) {
     notificationQueue.add(notification);
     LOG.info(notification.toString());
+
+    Thread thread = new Thread(this);
+    thread.setName("Notification Thread for " + notification);
+    thread.start();
   }
 
 
   @Override
   protected Void call() throws Exception {
-    while(running) {
-      if(!blocked && !notificationQueue.isEmpty()) {
-        blocked = true;
+    if(!blocked && !notificationQueue.isEmpty()) {
+      blocked = true;
 
-        Platform.runLater(() -> {
-          Notification notification = notificationQueue.poll();
-          NotificationNode notificationNode = new NotificationNode(notification);
-          final Scene scene = new Scene(notificationNode, notification.getWidth(), notification.getHeight(), true, SceneAntialiasing.BALANCED);
-          scene.getStylesheets().add(ResourceLoader.getResource("theme.css"));
-          Stage stage = UIControl.getInstance().getStage();
-          stage.setScene(scene);
-          stage.setAlwaysOnTop(ALWAYS_ON_TOP);
-          scene.setFill(null);
-          stage.setX(50);
-          stage.setY(50);
-          stage.show();
+      Platform.runLater(() -> {
+        Notification notification = notificationQueue.poll();
+        NotificationNode notificationNode = new NotificationNode(notification);
+        final Scene scene = new Scene(notificationNode, notification.getWidth(), notification.getHeight(), true, SceneAntialiasing.BALANCED);
+        scene.getStylesheets().add(ResourceLoader.getResource("theme.css"));
+        Stage stage = UIControl.getInstance().getStage();
+        stage.setScene(scene);
+        stage.setAlwaysOnTop(true);
+        scene.setFill(null);
+        stage.setX(50);
+        stage.setY(50);
+        stage.show();
 
-          FadeTransition outFader = TransitionUtil.createOutFader(notificationNode, 500);
-          outFader.setDelay(Duration.millis(notification.getTimeout()));
-          outFader.setOnFinished(event -> {
-            stage.close();
-            blocked = false;
-          });
-          outFader.play();
+        FadeTransition outFader = TransitionUtil.createOutFader(notificationNode, 500);
+        outFader.setDelay(Duration.millis(notification.getTimeout()));
+        outFader.setOnFinished(event -> {
+          stage.close();
+          blocked = false;
         });
-      }
+        outFader.play();
+      });
     }
     return null;
   }

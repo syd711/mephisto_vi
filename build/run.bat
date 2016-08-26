@@ -1,0 +1,1 @@
+java -classpath *;. com.mavenbox.MavenBoxService

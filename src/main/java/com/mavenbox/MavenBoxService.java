@@ -7,7 +7,7 @@ import javafx.stage.Stage;
 /**
  * The JavaFX UI
  */
-public class MavenBox extends Application {
+public class MavenBoxService extends Application {
 
   public static void main(String[] args) {
     launch(args);
@@ -15,6 +15,11 @@ public class MavenBox extends Application {
 
   @Override
   public void start(final Stage stage) {
+    String bit = System.getProperty("sun.arch.data.model");
+    if(!bit.equals("64")) {
+      System.out.println("Not a 64 bit JDK");
+      System.exit(-1);
+    }
     UIControl.getInstance().init(stage);
   }
 }

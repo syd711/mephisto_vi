@@ -8,6 +8,8 @@
 *.war
 *.ear
 
+conf/callete-dev.properties
+
 .idea
 target
 
