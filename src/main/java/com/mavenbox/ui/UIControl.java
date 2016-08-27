@@ -62,7 +62,6 @@ public class UIControl implements ControlEventListener, SerialCommandListener, S
     initServices();
 
     this.stage = stage;
-    PlatformImpl.setTaskbarApplication(false);
     this.stage.initStyle(StageStyle.TRANSPARENT);
 
     eventListeners.add(this);

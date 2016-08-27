@@ -133,6 +133,7 @@ public class ArduinoClient {
           output.flush();
         } catch (IOException e) {
           LOG.error("Failed to send command '" + command + "' to Arduino: " + e.getMessage());
+          restart();
         }
       }
     };
