@@ -1,1 +1,0 @@
-nssm remove Maven-Box confirm

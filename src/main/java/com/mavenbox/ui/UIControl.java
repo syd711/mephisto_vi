@@ -13,7 +13,6 @@ import com.mavenbox.ui.notifications.NotificationService;
 import com.mavenbox.ui.projects.*;
 import com.sun.deploy.uitoolkit.impl.fx.HostServicesFactory;
 import com.sun.javafx.application.HostServicesDelegate;
-import com.sun.javafx.application.PlatformImpl;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
