@@ -84,6 +84,11 @@
    -fx-text-fill: black;
 }
 
+.pipeline-link {
+   -fx-font-size: 12px;
+   -fx-text-fill: black;
+}
+
 /* Background */
 .title-box {
     -fx-background-color:#000;

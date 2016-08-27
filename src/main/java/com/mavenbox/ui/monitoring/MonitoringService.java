@@ -17,12 +17,14 @@ public class MonitoringService {
     while(true) {
       String nameKey = "monitoring." + index + ".name";
       String hostKey = "monitoring." + index + ".host";
+      String linkKey = "monitoring." + index + ".link";
 
       if(Callete.getConfiguration().containsKey(nameKey)) {
         String name = Callete.getConfiguration().getString(nameKey);
         String host = Callete.getConfiguration().getString(hostKey);
+        String link = Callete.getConfiguration().getString(linkKey);
 
-        Pipeline pipeline = new Pipeline(index, name, host);
+        Pipeline pipeline = new Pipeline(index, name, host, link);
         new HostWatchDog(pipeline).start();
         pipelines.add(pipeline);
       }

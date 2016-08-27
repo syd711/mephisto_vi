@@ -11,7 +11,10 @@ import com.mavenbox.ui.monitoring.PipelinesNode;
 import com.mavenbox.ui.notifications.Notification;
 import com.mavenbox.ui.notifications.NotificationService;
 import com.mavenbox.ui.projects.*;
+import com.sun.deploy.uitoolkit.impl.fx.HostServicesFactory;
+import com.sun.javafx.application.HostServicesDelegate;
 import com.sun.javafx.application.PlatformImpl;
+import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -34,13 +37,14 @@ public class UIControl implements ControlEventListener, SerialCommandListener, S
 
   private ArduinoClient arduinoClient;
   private Stage stage;
+  private Application application;
+
   private RotaryEncoderControlled rotaryEncoderControl;
   private boolean pullEnabled;
   private boolean makeEnabled;
   private boolean pushEnabled;
 
   private NotificationService notificationService;
-
   private MonitoringService monitoringService;
 
   //force singleton
@@ -51,7 +55,8 @@ public class UIControl implements ControlEventListener, SerialCommandListener, S
     return instance;
   }
 
-  public void init(Stage stage) {
+  public void init(Application application, Stage stage) {
+    this.application = application;
     Platform.setImplicitExit(false);
 
     initServices();
@@ -124,7 +129,7 @@ public class UIControl implements ControlEventListener, SerialCommandListener, S
       case SWITCH_1: {
         pullEnabled = e.equals(ControlEvent.Event.ON);
         if(!event.isSilent()) {
-          Notification notification = new Notification("Build Control", "Git Pull:", pullEnabled);
+          Notification notification = new Notification("Build Control", "Git Pull", pullEnabled);
           notificationService.showNotification(notification);
         }
         break;
@@ -132,7 +137,7 @@ public class UIControl implements ControlEventListener, SerialCommandListener, S
       case SWITCH_2: {
         makeEnabled = e.equals(ControlEvent.Event.ON);
         if(!event.isSilent()) {
-          Notification notification = new Notification("Build Control", "Maven Build:", makeEnabled, 250);
+          Notification notification = new Notification("Build Control", "Maven Build", makeEnabled, 250);
           notificationService.showNotification(notification);
         }
         break;
@@ -140,13 +145,13 @@ public class UIControl implements ControlEventListener, SerialCommandListener, S
       case SWITCH_3: {
         pushEnabled = e.equals(ControlEvent.Event.ON);
         if(!event.isSilent()) {
-          Notification notification = new Notification("Build Control", "Git Push:", pushEnabled);
+          Notification notification = new Notification("Build Control", "Git Push", pushEnabled);
           notificationService.showNotification(notification);
         }
         break;
       }
       case PIPELINE_PUSH_BUTTON: {
-        Notification notification = new Notification("Pipelines", new PipelinesNode(), 460, 400, 5000);
+        Notification notification = new Notification("Pipelines", new PipelinesNode(), 460, 530, 5000);
         notificationService.showNotification(notification);
         break;
       }
@@ -232,5 +237,10 @@ public class UIControl implements ControlEventListener, SerialCommandListener, S
 
   public boolean isPullEnabled() {
     return pullEnabled;
+  }
+
+  public void open(String link) {
+    HostServicesDelegate hostServices = HostServicesFactory.getInstance(application);
+    hostServices.showDocument(link);
   }
 }

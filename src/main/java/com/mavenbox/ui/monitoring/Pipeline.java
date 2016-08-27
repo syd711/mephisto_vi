@@ -8,11 +8,13 @@ public class Pipeline {
   private String name;
   private String host;
   private boolean status;
+  private String link;
 
-  public Pipeline(int index, String name, String host) {
+  public Pipeline(int index, String name, String host, String link) {
     this.index = index;
     this.name = name;
     this.host = host;
+    this.link = link;
   }
 
   public int getIndex() {
@@ -33,5 +35,9 @@ public class Pipeline {
 
   public void setStatus(boolean status) {
     this.status = status;
+  }
+
+  public String getLink() {
+    return link;
   }
 }

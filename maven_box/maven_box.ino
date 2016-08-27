@@ -117,7 +117,9 @@ void setup(){
 
   //Serial write of the initial switch button state
   writeSwitchState(digitalRead(SWITCH_BUTTON_PIN_1), "SWITCH_3", SWITCH_BUTTON_PIN_1, true);
+  delay(100);
   writeSwitchState(digitalRead(SWITCH_BUTTON_PIN_2), "SWITCH_2", SWITCH_BUTTON_PIN_2, true);
+  delay(100);
   writeSwitchState(digitalRead(SWITCH_BUTTON_PIN_3), "SWITCH_1", SWITCH_BUTTON_PIN_3, true);
 
   //switch LEDs

@@ -72,15 +72,15 @@ public class NotificationService extends Task<Void> {
           });
           outFader.play();
         });
+      }
 
-        if(notificationQueue.isEmpty()) {
-          try {
-            synchronized(this) {
-              wait();
-            }
-          } catch (InterruptedException e) {
-            //e.printStackTrace();
+      if(notificationQueue.isEmpty()) {
+        try {
+          synchronized(this) {
+            wait();
           }
+        } catch (InterruptedException e) {
+          //e.printStackTrace();
         }
       }
     }

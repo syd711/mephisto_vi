@@ -20,6 +20,6 @@ public class MavenBoxService extends Application {
       System.out.println("Not a 64 bit JDK");
       System.exit(-1);
     }
-    UIControl.getInstance().init(stage);
+    UIControl.getInstance().init(this, stage);
   }
 }
