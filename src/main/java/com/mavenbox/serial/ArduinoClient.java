@@ -27,13 +27,14 @@ public class ArduinoClient {
   private List<SerialCommandListener> commandListeners = new ArrayList<>();
   private List<StatusListener> statusListeners = new ArrayList<>();
   private boolean connected = false;
+  private Boolean status = null;
   private StringBuilder buffer = new StringBuilder();
 
   public ArduinoClient(String port) {
     this.port = port;
   }
 
-  public void connect() {
+  public boolean connect() {
     try {
       SerialPort serialPort = SerialPort.getCommPort(port);
       serialPort.setBaudRate(9600);
@@ -63,19 +64,31 @@ public class ArduinoClient {
 
       //Let's wait a little bit, otherwise the initial data connection doesn't work
       Thread.sleep(2000);
-      this.output = new BufferedOutputStream(serialPort.getOutputStream());
-      connected = true;
-      sendCommand(ArduinoCommandFactory.createStatusCommand());
+      if(serialPort.isOpen()) {
+        this.output = new BufferedOutputStream(serialPort.getOutputStream());
 
-      for(StatusListener listener : statusListeners) {
-        listener.statusChanged(true);
+        String command = ArduinoCommandFactory.createStatusCommand();
+        output.write(command.getBytes());
+        output.flush();
+
+        for(StatusListener listener : statusListeners) {
+          listener.statusChanged(true);
+        }
+        connected = true;
       }
-      LOG.info("Arduino Client connect successful!");
+      else {
+        LOG.error("Failed to open COM port");
+        restart();
+      }
     } catch (Exception e) {
       connected = false;
       LOG.error("Failed to open port '" + port + "': " + e.toString());
       restart();
     }
+    finally {
+       status = connected;
+    }
+    return connected;
   }
 
   private void checkCommandBuffer() {
@@ -146,8 +159,12 @@ public class ArduinoClient {
    */
   public void shutdown() {
     connected = false;
-    for(StatusListener listener : statusListeners) {
-      listener.statusChanged(false);
+    if(status == null || connected != status) {
+      status = connected;
+
+      for(StatusListener listener : statusListeners) {
+        listener.statusChanged(false);
+      }
     }
   }
 
