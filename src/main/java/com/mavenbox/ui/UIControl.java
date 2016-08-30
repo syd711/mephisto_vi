@@ -86,7 +86,6 @@ public class UIControl implements ControlEventListener, SerialCommandListener, S
         arduinoClient.connect();
 
         monitoringService.init();
-        Workspaces.init();
       }
     }.start();
   }

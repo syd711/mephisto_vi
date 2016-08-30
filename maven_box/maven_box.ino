@@ -25,9 +25,6 @@ const int encoderPin2 = 2;
 const int ENCODER_BUTTON_PIN = 4; //push button switch
 volatile int lastEncoded = 0;
 int encoderValue = 0;
-long lastencoderValue = 0;
-int lastMSB = 0;
-int lastLSB = 0;
 int encoderButtonState = 0;
 
 //push buttons
@@ -386,7 +383,6 @@ void updateEncoder(){
   int encoded = (MSB << 1) |LSB; //converting the 2 pin value to single number
   int sum  = (lastEncoded << 2) | encoded; //adding it to the previous encoded value
 
-  //if(sum == 13 || sum == 4 || sum == 2 || sum == 11) encoderValue ++;
   if(sum == 2){
     encoderValue --;//skip updates
 
@@ -394,7 +390,6 @@ void updateEncoder(){
     String cmd = "{source:'ROTARY_ENCODER', event:'ROTATE_LEFT'}";
     Serial.println(cmd);
   }
-  //if(sum == 14 || sum == 7 || sum == 1 || sum == 8 ) encoderValue --;
   if(sum == 1) {
     encoderValue ++;//skip updates
 

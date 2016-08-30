@@ -114,7 +114,8 @@ public class ProjectBuilder extends Task<Void> {
 
   private boolean make() {
     try {
-      SystemCommandExecutor executor = new SystemCommandExecutor(Arrays.asList("mvn" ,"clean", "install"));
+      String[] cmd = Callete.getConfiguration().getStringArray("workspace.mvn.cmd");
+      SystemCommandExecutor executor = new SystemCommandExecutor(Arrays.asList(cmd));
       executor.setDir(dir);
       executor.enableLogging(true);
       executor.executeCommand();
