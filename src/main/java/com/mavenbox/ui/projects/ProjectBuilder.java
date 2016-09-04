@@ -167,6 +167,7 @@ public class ProjectBuilder extends Task<Void> {
     pullCommand.setCredentialsProvider(new UsernamePasswordCredentialsProvider(LOGIN, PASSWORD));
     pullCommand.setRemote(Constants.DEFAULT_REMOTE_NAME);
     pullCommand.setRemoteBranchName(branch.getName());
+    pullCommand.setRebase(true);
     try {
       PullResult result = pullCommand.call();
       LOG.info("Git pull fetched from " + result.getFetchedFrom());
