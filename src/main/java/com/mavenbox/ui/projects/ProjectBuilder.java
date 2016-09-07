@@ -52,6 +52,10 @@ public class ProjectBuilder extends Task<Void> {
 
 
     try {
+      String name = branch.getName();
+      String activeName = git.getRepository().getBranch();
+      boolean sameBranch = name.equals(activeName);
+
       if(pull && dirty) {
         stash();
       }
@@ -67,6 +71,9 @@ public class ProjectBuilder extends Task<Void> {
 
       //-------- MAKE -------------------
       if(make) {
+        if(sameBranch && dirty) {
+          unstash();
+        }
         if(!make()) {
           return null;
         }
