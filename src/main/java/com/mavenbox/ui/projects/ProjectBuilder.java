@@ -2,6 +2,7 @@ package com.mavenbox.ui.projects;
 
 import callete.api.Callete;
 import callete.api.util.SystemCommandExecutor;
+import com.google.common.annotations.VisibleForTesting;
 import com.mavenbox.serial.ArduinoCommandFactory;
 import com.mavenbox.ui.UIControl;
 import com.mavenbox.ui.notifications.Notification;
@@ -186,7 +187,8 @@ public class ProjectBuilder extends Task<Void> {
   }
 
 
-  private boolean pull(Branch branch) {
+  @VisibleForTesting
+  protected boolean pull(Branch branch) {
     PullCommand pullCommand = git.pull();
     pullCommand.setCredentialsProvider(new UsernamePasswordCredentialsProvider(LOGIN, PASSWORD));
     pullCommand.setRemote(Constants.DEFAULT_REMOTE_NAME);
