@@ -45,6 +45,7 @@ public class UIControl implements ControlEventListener, SerialCommandListener, S
 
   private NotificationService notificationService;
   private MonitoringService monitoringService;
+  private WorkspaceService workspaceService;
 
   //force singleton
   private UIControl() {
@@ -74,6 +75,7 @@ public class UIControl implements ControlEventListener, SerialCommandListener, S
   private void initServices() {
     notificationService = new NotificationService();
     monitoringService = new MonitoringService();
+    workspaceService = new WorkspaceService();
 
     String port = Callete.getConfiguration().getString("arduino.port");
     arduinoClient = new ArduinoClient(port);
@@ -98,6 +100,9 @@ public class UIControl implements ControlEventListener, SerialCommandListener, S
     return arduinoClient;
   }
 
+  public WorkspaceService getWorkspaceService() {
+    return workspaceService;
+  }
 
   public void fireControlEvent(ControlEvent event) {
     for(ControlEventListener eventListener : eventListeners) {

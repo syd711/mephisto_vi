@@ -29,7 +29,7 @@ public class HostWatchDog extends Thread {
     LOG.info("Started new monitoring watchdog [" + pipeline.getIndex() + "] '" + pipeline.getName() + "' for " + pipeline.getHost());
     while(running) {
       try {
-        int returnCode = Callete.getMonitoringService().httpPing(pipeline.getHost(), 80);
+        int returnCode = Callete.getMonitoringService().httpPing(pipeline.getHost());
         boolean available = returnCode == 200;
         updateMonitoringStatus(available);
         pipeline.setStatus(available);

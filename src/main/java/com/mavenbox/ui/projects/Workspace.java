@@ -1,7 +1,6 @@
 package com.mavenbox.ui.projects;
 
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
@@ -49,20 +48,7 @@ public class Workspace {
   }
 
   public String getName() {
-    if(isDirty()) {
-      return name + "*";
-    }
     return name;
-  }
-
-  public boolean isDirty() {
-    try {
-      Status status = git.status().call();
-      return !status.getUncommittedChanges().isEmpty();
-    } catch (GitAPIException e) {
-      LOG.error("Failed to determine status: " + e.getMessage(), e);
-    }
-    return false;
   }
 
   /**
@@ -70,7 +56,7 @@ public class Workspace {
    * @param branch the branch to build
    */
   public void build(Branch branch, boolean pull, boolean make, boolean push) {
-    Thread t = new Thread(new ProjectBuilder(git, dir, branch, pull, make, push, isDirty()));
+    Thread t = new Thread(new ProjectBuilder(git, dir, branch, pull, make, push));
     t.setName("ProjectBuilder for " + dir.getAbsolutePath());
     t.start();
   }

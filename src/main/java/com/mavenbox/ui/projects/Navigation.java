@@ -30,6 +30,7 @@ public class Navigation extends HBox implements RotaryEncoderControlled {
   private int index = 0;
   private List<WorkspaceNavigationNode> jobNodes = new ArrayList<>();
   private WorkspaceNavigationNode activeWorkspace;
+  private List<Workspace> workspaces = UIControl.getInstance().getWorkspaceService().getWorkspaces();
 
   public Navigation() {
     double top = (Screen.getPrimary().getVisualBounds().getHeight()/2)-200;
@@ -41,7 +42,7 @@ public class Navigation extends HBox implements RotaryEncoderControlled {
 
   @Override
   public void rotateLeft() {
-    if(index < Workspaces.getWorkspaces().size()-1) {
+    if(index < workspaces.size()-1) {
       index++;
       scroll(-WorkspaceNavigationNode.WIDTH);
     }
@@ -87,12 +88,13 @@ public class Navigation extends HBox implements RotaryEncoderControlled {
     HBox spacer = new HBox();
     spacer.setAlignment(Pos.BASELINE_CENTER);
     spacer.getStyleClass().addAll("job-node");
-    double offset = (Workspaces.getWorkspaces().size() - 1) * WorkspaceNavigationNode.WIDTH;
+
+    double offset = (workspaces.size() - 1) * WorkspaceNavigationNode.WIDTH;
     spacer.setMinWidth(offset);
     scroller.getChildren().add(spacer);
 
 
-    for(Workspace workspace : Workspaces.getWorkspaces()) {
+    for(Workspace workspace : workspaces) {
       jobNodes.add(new WorkspaceNavigationNode(this, workspace));
     }
     scroller.getChildren().addAll(jobNodes);

@@ -1,2 +1,2 @@
-# mephisto_vi
+# The Maven Box
 Arduino JavaFX based control box

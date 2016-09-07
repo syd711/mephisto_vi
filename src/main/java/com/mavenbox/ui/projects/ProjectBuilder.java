@@ -29,29 +29,33 @@ public class ProjectBuilder extends Task<Void> {
   private boolean pull;
   private boolean make;
   private boolean push;
-  private boolean dirty;
   private Branch branch;
   private Git git;
 
-  public ProjectBuilder(Git git, File dir, Branch branch, boolean pull, boolean make, boolean push, boolean dirty) {
+  public ProjectBuilder(Git git, File dir, Branch branch, boolean pull, boolean make, boolean push) {
     this.git = git;
     this.dir = dir;
     this.branch = branch;
     this.pull = pull;
     this.make = make;
     this.push = push;
-    this.dirty = dirty;
   }
 
   @Override
   public Void call() throws Exception {
     LOG.info("Triggering build of " + branch.getName());
 
+    Notification startNotification = new Notification("Build Control", "Triggered Build of '" + dir.getName() + "'", true, 400);
+    UIControl.getInstance().getNotificationService().showNotification(startNotification);
+
     String blinkCommand = ArduinoCommandFactory.createBlinkCommand(true);
     UIControl.getInstance().getArduinoClient().sendCommand(blinkCommand);
 
-
     try {
+      boolean dirty = isDirty();
+      Notification dirtyNotification = new Notification("Build Control", "Checked Dirty State", true, 400);
+      UIControl.getInstance().getNotificationService().showNotification(dirtyNotification);
+
       String name = branch.getName();
       String activeName = git.getRepository().getBranch();
       boolean sameBranch = name.equals(activeName);
@@ -168,6 +172,19 @@ public class ProjectBuilder extends Task<Void> {
     }
     return true;
   }
+
+  private boolean isDirty() {
+    try {
+      long start = System.currentTimeMillis();
+      Status status = git.status().call();
+      LOG.info("Status command for " + dir.getAbsolutePath() + " took " + (System.currentTimeMillis()-start) + " milliseconds.");
+      return !status.getUncommittedChanges().isEmpty();
+    } catch (GitAPIException e) {
+      LOG.error("Failed to determine status: " + e.getMessage(), e);
+    }
+    return false;
+  }
+
 
   private boolean pull(Branch branch) {
     PullCommand pullCommand = git.pull();
