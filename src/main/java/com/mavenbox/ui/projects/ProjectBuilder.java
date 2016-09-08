@@ -98,6 +98,10 @@ public class ProjectBuilder extends Task<Void> {
       }
 
       LOG.info("Build of " + branch.getName() + " finished.");
+
+      Notification state = new Notification("Build Control", "Finished Updating '" + branch.getName() + "'", true, 500);
+      UIControl.getInstance().getNotificationService().showNotification(state);
+
       return null;
     }
     finally {
@@ -107,6 +111,10 @@ public class ProjectBuilder extends Task<Void> {
   }
 
   private boolean checkout() {
+    Notification state = new Notification("Build Control", "Executing Checkout", true, 400);
+    state.setStateNotification(true);
+    UIControl.getInstance().getNotificationService().showNotification(state);
+
     String selectedBranch = branch.getName();
 
     try {
@@ -127,6 +135,10 @@ public class ProjectBuilder extends Task<Void> {
   }
 
   private boolean make() {
+    Notification state = new Notification("Build Control", "Executing Maven Build...", true, 400);
+    state.setStateNotification(true);
+    UIControl.getInstance().getNotificationService().showNotification(state);
+
     try {
       String[] cmd = Callete.getConfiguration().getStringArray("workspace.mvn.cmd");
       SystemCommandExecutor executor = new SystemCommandExecutor(Arrays.asList(cmd));
@@ -150,6 +162,10 @@ public class ProjectBuilder extends Task<Void> {
 
 
   private boolean stash() {
+    Notification state = new Notification("Build Control", "Stashing Changes...", true, 400);
+    state.setStateNotification(true);
+    UIControl.getInstance().getNotificationService().showNotification(state);
+
     try {
       StashCreateCommand stashCreateCommand = git.stashCreate();
       stashCreateCommand.call();
@@ -164,6 +180,10 @@ public class ProjectBuilder extends Task<Void> {
 
 
   private boolean unstash() {
+    Notification state = new Notification("Build Control", "Unstashing Changes...", true, 400);
+    state.setStateNotification(true);
+    UIControl.getInstance().getNotificationService().showNotification(state);
+
     try {
       StashApplyCommand stashApplyCommand = git.stashApply();
       stashApplyCommand.call();
@@ -177,6 +197,10 @@ public class ProjectBuilder extends Task<Void> {
   }
 
   private boolean isDirty() {
+    Notification state = new Notification("Build Control", "Checking Dirty State...", true, 400);
+    state.setStateNotification(true);
+    UIControl.getInstance().getNotificationService().showNotification(state);
+
     try {
       long start = System.currentTimeMillis();
       Status status = git.status().call();
@@ -191,6 +215,12 @@ public class ProjectBuilder extends Task<Void> {
 
   @VisibleForTesting
   protected boolean pull(Branch branch) {
+    Notification state = new Notification("Build Control", "Pulling Changes...", true, 400);
+    state.setStateNotification(true);
+    UIControl.getInstance().getNotificationService().showNotification(state);
+
+    LOG.info("Pulling from " + dir.getAbsolutePath()+  "/" + branch.getName());
+    long start = System.currentTimeMillis();
     PullCommand pullCommand = git.pull();
     applyAuthentication(pullCommand);
     pullCommand.setRemote(Constants.DEFAULT_REMOTE_NAME);
@@ -207,11 +237,16 @@ public class ProjectBuilder extends Task<Void> {
       UIControl.getInstance().getNotificationService().showNotification(new Notification("Git", "Git Pull failed", false, 400));
       return false;
     }
+    finally {
+      LOG.info("Pull command for " + dir.getAbsolutePath() + " took " + (System.currentTimeMillis()-start) + " milliseconds.");
+    }
     return true;
   }
 
 
   private boolean push() {
+    LOG.info("Pushing to " + dir.getAbsolutePath()+  "/" + branch.getName());
+    long start = System.currentTimeMillis();
     try {
       PushCommand pushCommand = git.push();
       applyAuthentication(pushCommand);
@@ -221,6 +256,9 @@ public class ProjectBuilder extends Task<Void> {
     } catch (GitAPIException e) {
       LOG.error("Push command failed: " + e.getMessage(), e);
       UIControl.getInstance().getNotificationService().showNotification(new Notification("Git", "Git Push failed", false, 400));
+    }
+    finally {
+      LOG.info("Push command for " + dir.getAbsolutePath() + " took " + (System.currentTimeMillis()-start) + " milliseconds.");
     }
     return false;
   }

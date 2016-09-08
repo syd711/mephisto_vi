@@ -28,6 +28,7 @@ public class NotificationService extends Task<Void> {
   private boolean running = true;
   private Queue<Notification> notificationQueue = new ArrayBlockingQueue<Notification>(100, true);
   private boolean blocked = false;
+  private Notification lastNotification;
 
   public NotificationService() {
     Thread thread = new Thread(this);
@@ -35,7 +36,15 @@ public class NotificationService extends Task<Void> {
     thread.start();
   }
 
+  public void showState() {
+    showNotification(lastNotification);
+  }
+
   public void showNotification(Notification notification) {
+    lastNotification = notification;
+    if(notification.isStateNotification()) {
+      return;
+    }
     notificationQueue.add(notification);
 
     synchronized(this) {

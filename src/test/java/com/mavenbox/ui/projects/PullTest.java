@@ -42,7 +42,6 @@ public class PullTest {
         pullCommand.setRebase(true);
         try {
           PullResult result = pullCommand.call();
-
           if(result.isSuccessful()) {
             System.out.println("Pull successful");
             MergeResult mergeResult = result.getMergeResult();

@@ -18,6 +18,7 @@ public class Notification {
   private int width = WIDTH;
   private int height = HEIGHT;
   private Node panel;
+  private boolean stateNotification;
 
   public Notification(String title, Node panel, int width, int height, int timeout) {
     this.title = title;
@@ -90,5 +91,13 @@ public class Notification {
 
   public Node getPanel() {
     return panel;
+  }
+
+  public boolean isStateNotification() {
+    return stateNotification;
+  }
+
+  public void setStateNotification(boolean stateNotification) {
+    this.stateNotification = stateNotification;
   }
 }

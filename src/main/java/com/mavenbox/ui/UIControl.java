@@ -15,6 +15,7 @@ import com.sun.deploy.uitoolkit.impl.fx.HostServicesFactory;
 import com.sun.javafx.application.HostServicesDelegate;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.slf4j.Logger;
@@ -57,6 +58,8 @@ public class UIControl implements ControlEventListener, SerialCommandListener, S
 
   public void init(Application application, Stage stage) {
     this.application = application;
+    stage.setTitle("Maven Box");
+    stage.getIcons().add(new Image(ResourceLoader.getResource("logo.png"), 48, 48, true, true));
     Platform.setImplicitExit(false);
 
     initServices();
@@ -158,7 +161,7 @@ public class UIControl implements ControlEventListener, SerialCommandListener, S
         break;
       }
       case F1_PUSH_BUTTON: {
-        executeFunctionKey("f1");
+        notificationService.showState();
         break;
       }
       case F2_PUSH_BUTTON: {
