@@ -25,6 +25,8 @@ public class ProjectBuilder extends Task<Void> {
 
   private final static String LOGIN = Callete.getConfiguration().getString("git.login");
   private final static String PASSWORD = Callete.getConfiguration().getString("git.password");
+  private final static String AUTHENTICATION_TYPE = Callete.getConfiguration().getString("git.authentication");
+  private final static String AUTHENTICATION_TYPE_SSH = "ssh";
 
   private File dir;
   private boolean pull;
@@ -190,7 +192,7 @@ public class ProjectBuilder extends Task<Void> {
   @VisibleForTesting
   protected boolean pull(Branch branch) {
     PullCommand pullCommand = git.pull();
-    pullCommand.setCredentialsProvider(new UsernamePasswordCredentialsProvider(LOGIN, PASSWORD));
+    applyAuthentication(pullCommand);
     pullCommand.setRemote(Constants.DEFAULT_REMOTE_NAME);
     pullCommand.setRemoteBranchName(branch.getName());
     pullCommand.setRebase(true);
@@ -212,7 +214,7 @@ public class ProjectBuilder extends Task<Void> {
   private boolean push() {
     try {
       PushCommand pushCommand = git.push();
-      pushCommand.setCredentialsProvider(new UsernamePasswordCredentialsProvider(LOGIN, PASSWORD));
+      applyAuthentication(pushCommand);
       pushCommand.call();
       UIControl.getInstance().getNotificationService().showNotification(new Notification("Git", "Git Push successful", true, 400));
       return true;
@@ -221,5 +223,14 @@ public class ProjectBuilder extends Task<Void> {
       UIControl.getInstance().getNotificationService().showNotification(new Notification("Git", "Git Push failed", false, 400));
     }
     return false;
+  }
+
+  private void applyAuthentication(TransportCommand command) {
+    if(AUTHENTICATION_TYPE.equals(AUTHENTICATION_TYPE_SSH)) {
+      command.setCredentialsProvider(new UsernamePasswordCredentialsProvider(LOGIN, PASSWORD));
+    }
+    else {
+      command.setTransportConfigCallback(new SSHAuthenticationProvider());
+    }
   }
 }

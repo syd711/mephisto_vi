@@ -9,7 +9,6 @@ import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
-import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.junit.Test;
 
 import java.io.File;
@@ -35,7 +34,8 @@ public class PullTest {
       System.out.println("Branch: " + branch.getName());
       if(branch.getName().endsWith("master")) {
         PullCommand pullCommand = git.pull();
-        pullCommand.setCredentialsProvider(new UsernamePasswordCredentialsProvider(LOGIN, PASSWORD));
+//        pullCommand.setCredentialsProvider(new UsernamePasswordCredentialsProvider(LOGIN, PASSWORD));
+        pullCommand.setTransportConfigCallback(new SSHAuthenticationProvider());
         pullCommand.setRemote(Constants.DEFAULT_REMOTE_NAME);
         pullCommand.setRemoteBranchName(branch.getName());
         pullCommand.setRebase(true);
