@@ -2,6 +2,7 @@ package com.mavenbox.ui.projects;
 
 import callete.api.Callete;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.MergeResult;
 import org.eclipse.jgit.api.PullCommand;
 import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -44,7 +45,9 @@ public class PullTest {
 
           if(result.isSuccessful()) {
             System.out.println("Pull successful");
+            MergeResult mergeResult = result.getMergeResult();
           }
+          return;
         } catch (Exception e) {
           e.printStackTrace();
         }

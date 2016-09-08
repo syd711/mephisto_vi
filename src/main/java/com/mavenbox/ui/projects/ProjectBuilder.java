@@ -227,10 +227,10 @@ public class ProjectBuilder extends Task<Void> {
 
   private void applyAuthentication(TransportCommand command) {
     if(AUTHENTICATION_TYPE.equals(AUTHENTICATION_TYPE_SSH)) {
-      command.setCredentialsProvider(new UsernamePasswordCredentialsProvider(LOGIN, PASSWORD));
+      command.setTransportConfigCallback(new SSHAuthenticationProvider());
     }
     else {
-      command.setTransportConfigCallback(new SSHAuthenticationProvider());
+      command.setCredentialsProvider(new UsernamePasswordCredentialsProvider(LOGIN, PASSWORD));
     }
   }
 }
