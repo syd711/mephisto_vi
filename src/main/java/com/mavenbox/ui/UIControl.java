@@ -173,7 +173,8 @@ public class UIControl implements ControlEventListener, SerialCommandListener, S
   }
 
   private void executeFunctionKey(String key) {
-    SystemCommandExecutor executor = new SystemCommandExecutor(Arrays.asList(key+".bat"));
+    String path = Callete.getConfiguration().getString("function.keys.home");
+    SystemCommandExecutor executor = new SystemCommandExecutor(Arrays.asList(path + key+".bat"));
     executor.setDir(new File("conf/"));
     executor.executeCommandAsync();
   }
