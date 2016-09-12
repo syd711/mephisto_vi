@@ -33,13 +33,13 @@ public class Projects {
       stage.addEventFilter(KeyEvent.KEY_PRESSED, new ControlKeyEventFilter());
       stage.setX(0);
       stage.setY(0);
-      stage.show();
-
       UIControl.getInstance().setRotaryEncoderControl(navigation);
       stage.show();
     }
     else {
       if(activeStage != null) {
+        //TODO mpf
+        UIControl.getInstance().setRotaryEncoderControl(null);
         activeStage.hide();
       }
     }

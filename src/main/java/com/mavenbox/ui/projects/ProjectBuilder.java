@@ -152,7 +152,10 @@ public class ProjectBuilder extends Task<Void> {
       if(successful) {
         UIControl.getInstance().getNotificationService().showNotification(new Notification("Maven", "Maven Build successful", true, 400));
       }
-      return true;
+      else {
+        UIControl.getInstance().getNotificationService().showNotification(new Notification("Maven", "Maven Build failed!", false, 400));
+      }
+      return successful;
     } catch (Exception e) {
       LOG.error("Failed to execute pull: " + e.getMessage());
       UIControl.getInstance().getNotificationService().showNotification(new Notification("Maven", "Maven Build failed", false, 400));

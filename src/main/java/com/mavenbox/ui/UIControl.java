@@ -2,6 +2,7 @@ package com.mavenbox.ui;
 
 import callete.api.Callete;
 import callete.api.util.SystemCommandExecutor;
+import callete.api.util.SystemUtils;
 import com.mavenbox.serial.ArduinoClient;
 import com.mavenbox.serial.SerialCommand;
 import com.mavenbox.serial.SerialCommandListener;
@@ -165,7 +166,11 @@ public class UIControl implements ControlEventListener, SerialCommandListener, S
         break;
       }
       case F2_PUSH_BUTTON: {
-        executeFunctionKey("f2");
+        LOG.info("Max Memory: " + SystemUtils.humanReadableByteCount(Callete.getSystemService().getMaxMemory()) + " bytes");
+        LOG.info("Free Memory: " + SystemUtils.humanReadableByteCount(Callete.getSystemService().getFreeMemory()) + " bytes");
+        LOG.info("Performing GC...");
+        System.gc();
+        LOG.info("Free Memory: " + SystemUtils.humanReadableByteCount(Callete.getSystemService().getFreeMemory()) + " bytes");
         break;
       }
       case F3_PUSH_BUTTON: {

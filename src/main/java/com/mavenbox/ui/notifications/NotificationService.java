@@ -38,6 +38,12 @@ public class NotificationService extends Task<Void> {
 
   public void showState() {
     showNotification(lastNotification);
+    notificationQueue.add(lastNotification);
+
+    synchronized(this) {
+      notify();
+    }
+    LOG.info(lastNotification.toString());
   }
 
   public void showNotification(Notification notification) {
